@@ -34,6 +34,13 @@ Le dictionnaire de données comprend 6 tables principales :
 
  8. api/
        |- get_restaurants.php (Récupération + filtres des restos)
-       |- get_workspaces.php  (Liste des quartiers pour les filtres)
-       |- post_avis.php       (Ajout d'avis avec sécurité IP)
-       |- upload_media.php    (Vérification MIME stricte des photos)
+       |- get_workspaces.php (Liste des quartiers pour les filtres)
+       |- post_avis.php (Ajout d'avis avec sécurité IP)
+       |- upload_media.php (Vérification MIME stricte des photos)
+
+9. frontend/
+            |-js/
+                |- api.js (Fonctions fetch() vers le backend)
+                |- dom.js (Injection des cartes restos dans le HTML)
+                |- filters.js (Gestion des filtres par quartier/spécialité)
+                |- favorites.js (Logique localStorage pour les favoris)
