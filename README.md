@@ -1,5 +1,6 @@
 Projet de plateforme de découverte et de référencement gastronomique pour Pointe-Noire.
-Jour 1
+
+Jour 1 : 
 1. Ajout du cahier de charge
 
 2. Ajout du dossier docs
@@ -21,3 +22,5 @@ Jour 2
 5. Insertion d'éléments dans chacune des tables
 
 6. Connexion à la base de données.
+
+7. Amélioration de la structure de PointeResto
