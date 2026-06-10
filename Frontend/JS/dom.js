@@ -2,19 +2,24 @@
  * Rôle : Manipulation de l'affichage HTML uniquement via des classes CSS.
  */
 
-/**
- * Associe une classe CSS (code couleur) au statut d'ouverture
+/** Associe une classe CSS (code couleur) au statut d'ouverture
  * @param {string} statut 
  * @returns {string} 
  */
 function obtenirClasseStatut(statut) {
-    switch (statut?.toLowerCase()) {
+    // Nettoyage : conversion en minuscules et suppression des accents courants
+    const statutNettoye = statut?.toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "") 
+        .trim();
+
+    switch (statutNettoye) {
         case 'ouvert': 
             return 'status-green';   
         case 'ferme bientot': 
             return 'status-orange';  
         default: 
-            return 'status-red';     
+            return 'status-red';  
     }
 }
 

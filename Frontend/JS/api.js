@@ -2,7 +2,7 @@
  * Rôle : Gérer exclusivement les appels HTTP vers les endpoints PHP. 
 */
 
-const BASE_URL = '../Backend/API'; // URL de base pour les appels API
+const BASE_URL = '/PointeResto/Backend/API'; // URL de base pour les appels API
 
 /** Récupère la liste des quartiers (Workspaces) depuis PostgreSQL
      @returns {Promise<Array>} 

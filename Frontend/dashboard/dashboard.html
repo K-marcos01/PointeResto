@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PointeResto - Dashboard Restaurateur</title>
+    <link rel="stylesheet" href="../Frontend/CSS/Global.css">
+    <link rel="stylesheet" href="./dashboard.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <h1> Espace Restaurateur</h1>
+    </header>
+
+    <main class="mobile-container">
+        <section class="dashboard-box">
+            <h2 id="resto-nom">Chargement du compte...</h2>
+            <p class="adresse" id="resto-adresse"> --</p>
+            
+            <div class="statut-actuel-container">
+                <span>Statut affiché :</span>
+                <span id="badge-statut-actuel" class="badge">--</span>
+            </div>
+        </section>
+
+        <section class="dashboard-box">
+            <h3>Modifier la disponibilité</h3>
+            <form id="form-statut" class="form-gestion">
+                <label for="select-statut">Choisir l'état en temps réel :</label>
+                <select id="select-statut" required>
+                    <option value="Ouvert"> Ouvert actuellement</option>
+                    <option value="Ferme bientot"> Ferme bientôt</option>
+                    <option value="Fermé"> Fermé exceptionnellement</option>
+                </select>
+                <button type="submit" class="btn-validation">Mettre à jour l'état</button>
+            </form>
+            <p id="msg-retour" class="no-data" style="margin-top: 10px; display: none;"></p>
+        </section>
+    </main>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
