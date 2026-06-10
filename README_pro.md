@@ -71,3 +71,13 @@ Le dictionnaire de données comprend 6 tables principales :
 10. Jour 3: 
 
 11. Création de la structure de l'interface utilisateur (HTML et CSS)
+
+12. Jour 4 : 
+
+13. Mise en place des endpoints (get_restaurants.php & get_workspaces.php)
+
+14. Mise en place de l'API(api.js) pour la gestion des appels http vers les endpoints
+
+15. Mise en place du fichier(dom.js) pour l'affichage des éléments HTML via les classes CSS
+
+16. Fin du travail sans extension du jour 4.
