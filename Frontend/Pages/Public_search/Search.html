@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PointeResto - Découverte Gastronomique</title>
+    <link rel="stylesheet" href="../../css/theme.css">
+    <link rel="stylesheet" href="/Frontend/Composantes/Header/Header.css">
+    <link rel="stylesheet" href="../Public_search/SearchCSS/Search_Layout.css">
+    <link rel="stylesheet" href="../Public_search/SearchCSS/Search_Filter.css">
+    <link rel="stylesheet" href="../Public_search/SearchCSS/Search_cards.css">
+</head>
+<body>
+
+    <div class="mobile-container">
+        <header class="main-header">
+            <div class="logo-container">
+                <div class="brand-badge">
+                    <img src="/Frontend/Assets/Images/Logo 1.jpeg" alt="Blason" class="crest-image">
+                </div>
+                <h1 class="brand-title">Pointe<span>Resto</span></h1>
+            </div>
+        </header>
+
+        <section class="filter-zone">
+            <div class="search-box">
+                <input type="text" id="input-recherche" placeholder="Ex: poisson braisé, maquis..." autocomplete="off">
+            </div>
+            <div class="select-box">
+                <select id="select-quartier">
+                    <option value="">Tous les quartiers de Pointe-Noire</option>
+                    </select>
+            </div>
+        </section>
+
+        <main class="results-zone">
+            <div id="wrapper-restaurants">
+                <p class="status-message">Chargement des établissements locaux...</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="../Public_search/SearchJS/Search_Logic.js"></script>
+</body>
+</html>

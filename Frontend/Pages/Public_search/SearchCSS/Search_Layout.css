@@ -1,0 +1,23 @@
+/* POINTERESTO - Structure Layout Public */
+.filter-zone {
+    padding: 16px;
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.results-zone {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.status-message {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 30px;
+}

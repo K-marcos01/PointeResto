@@ -1,0 +1,62 @@
+/* POINTERESTO - Design des cartes de restaurants */
+.restaurant-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+}
+
+.card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.restaurant-address {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Badges dynamiques réglementaires */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-badge.open { 
+    background-color: #e8f5e9; 
+    color: var(--status-open); 
+}
+.status-badge.warning { 
+    background-color: #fff3e0; 
+    color: var(--status-warning); 
+}
+.status-badge.closed { 
+    background-color: #ffebee; 
+    color: var(--status-closed); 
+}
+
+.food-type {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary);
+}
