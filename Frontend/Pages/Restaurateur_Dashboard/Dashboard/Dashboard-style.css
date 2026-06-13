@@ -1,0 +1,99 @@
+/* POINTERESTO - Style Tableau de Bord Privé */
+.dashboard-header {
+    background-color: var(--text-main);
+    color: #ffffff;
+    padding: 20px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboard-header h1 {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.dashboard-header p {
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.btn-logout {
+    background: none;
+    border: 1px solid #475569;
+    color: #cbd5e1;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.dashboard-content {
+    padding: 16px;
+}
+
+.control-box {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.control-box h3 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+}
+
+.status-preview {
+    margin-bottom: 20px;
+}
+
+.badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.badge.open { background-color: #e8f5e9; color: var(--status-open); }
+.badge.warning { background-color: #fff3e0; color: var(--status-warning); }
+.badge.closed { background-color: #ffebee; color: var(--status-closed); }
+
+.status-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.status-form label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.status-form select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background-color: #f8fafc;
+}
+
+.btn-save {
+    background-color: var(--text-main);
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 6px;
+}
+
+.success-box {
+    margin-top: 12px;
+    padding: 10px;
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    text-align: center;
+}

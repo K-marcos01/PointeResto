@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PointeResto - Console Gérant</title>
+    <link rel="stylesheet" href="../../Assets/Css/Thème.css">
+    <link rel="stylesheet" href="../Dashboard/Dashboard-style.css">
+</head>
+<body>
+    <div class="mobile-container">
+        <header class="dashboard-header">
+            <div>
+                <h1 id="restaurant-name">Chargement...</h1>
+                <p id="restaurant-zone"> --</p>
+            </div>
+            <button id="btn-deconnexion" class="btn-logout">Quitter</button>
+        </header>
+
+        <main class="dashboard-content">
+            <section class="control-box">
+                <h3>Statut d'Ouverture Actuel</h3>
+                <div class="status-preview">
+                    <span id="current-status-badge" class="badge">--</span>
+                </div>
+                
+                <form id="form-update-status" class="status-form">
+                    <label for="select-status">Changer l'état d'affichage :</label>
+                    <select id="select-status">
+                        <option value="Ouvert">🟢 Ouvert</option>
+                        <option value="Ferme bientot">🟠 Ferme bientôt</option>
+                        <option value="Fermé">🔴 Fermé</option>
+                    </select>
+                    <button type="submit" class="btn-save">Enregistrer la modification</button>
+                </form>
+                <p id="success-message" class="success-box" style="display: none;"></p>
+            </section>
+        </main>
+    </div>
+    <script src="../Dashboard/Dashboard_logic.js"></script>
+</body>
+</html>
