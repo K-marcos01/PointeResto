@@ -7,9 +7,9 @@ class Menu {
     }
 
     public function getMenuByRestaurant($restaurantId) {
-        $sql = "SELECT id_menu, titre, description, prix, est_disponible, categorie 
+        $sql = "SELECT id_menu, titre, description, prix, disponible, categorie 
                 FROM menus 
-                WHERE restaurant_id = :restaurant_id AND est_disponible = TRUE 
+                WHERE restaurant_id = :restaurant_id AND disponible = TRUE 
                 ORDER BY categorie ASC, titre ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':restaurant_id' => $restaurantId]);
