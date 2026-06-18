@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PointeResto - Guide Gastronomique</title>
+    <link rel="stylesheet" href="Assets/CSS/Theme.css">
+    <link rel="stylesheet" href="Assets/CSS/Header.css">
+    <link rel="stylesheet" href="Assets/CSS/Form.css">
+    <link rel="stylesheet" href="Assets/CSS/Grid.css">
+    <link rel="stylesheet" href="Assets/CSS/Grid.css">
+    <link rel="stylesheet" href="Assets/CSS/Menu-modal.css">
+    <link rel="stylesheet" href="Assets/CSS/Layout.css">
+</head>
+<body>
+    <nav class="main-navbar">
+        <a href="Index.html" class="logo-link">
+            <img src="Assets/Image/Logo.jpeg" alt="Logo" class="logo-icon">
+            <h1 class="logo-title">PointeResto</h1>
+        </a>
+        <div class="nav-links">
+            <button class="btn-submit" id="btn-toggle-favs">Favoris (<span id="fav-count">0</span>)</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="search-wrapper">
+            <input type="text" id="search-input" class="input-field" placeholder="Rechercher un plat, un maquis...">
+            <select id="quartier-select" class="select-field">
+                <option value="">Tous les quartiers</option>
+            </select>
+        </section>
+        <section id="restaurants-container" class="restaurants-grid"></section>
+    </main>
+
+    <div id="review-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Laisser un avis</h2><button class="close-button" onclick="closeReviewModal()">×</button></div>
+            <input type="hidden" id="modal-resto-id">
+            <select id="modal-review-note" class="select-field modal-select">
+                <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
+                <option value="4">⭐⭐⭐⭐ (Très bon)</option>
+                <option value="3">⭐⭐⭐ (Moyen)</option>
+            </select>
+            <textarea id="modal-review-text" class="input-field modal-text" placeholder="Votre commentaire..."></textarea>
+            <button class="btn-submit" onclick="submitReview()">Soumettre</button>
+        </div>
+    </div>
+
+    <script src="Assets/JS/api.js"></script>
+    <script src="Assets/JS/Auth.js"></script>
+    <script src="Assets/JS/Main.js"></script>
+</body>
+</html>

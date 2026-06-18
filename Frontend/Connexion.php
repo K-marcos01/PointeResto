@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PointeResto — Connexion</title>
+    <link rel="stylesheet" href="Assets/CSS/Theme.css">
+    <link rel="stylesheet" href="Assets/CSS/Connexion.css">
+    <link rel="stylesheet" href="Assets/CSS/Connexion2.css">
+    <link rel="stylesheet" href="Assets/CSS/Media.css">
+</head>
+<body>
+
+    <div class="hero">
+        <img src="Assets/Image/Logo.jpeg" alt="Logo PointeResto" class="hero-logo">
+        <h1 class="hero-title">PointeResto</h1>
+        <p class="hero-subtitle">Découvrez les meilleures tables et maquis de Pointe-Noire</p>
+    </div>
+
+    <div class="sheet">
+        <div class="sheet-handle"></div>
+        <p class="sheet-title">Bon retour</p>
+        <p class="sheet-subtitle">Connectez-vous ou explorez sans compte.</p>
+
+        <div class="input-group">
+            <input type="email" id="login-email" class="input-field"
+                   placeholder="Votre adresse email" autocomplete="email">
+            <input type="password" id="login-password" class="input-field"
+                   placeholder="Mot de passe" autocomplete="current-password">
+        </div>
+
+        <p id="login-error"></p>
+
+        <button class="btn-primary" id="btn-login-submit">Se connecter</button>
+
+        <div class="divider">ou</div>
+
+        <button class="btn-guest" id="btn-guest-explore">
+            Explorer sans compte →
+        </button>
+    </div>
+
+    <script src="Assets/JS/api.js"></script>
+    <script src="Assets/JS/Auth.js"></script>
+    <script src="Assets/JS/Login.js"></script>
+</body>
+</html>

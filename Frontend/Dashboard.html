@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Professionnel - PointeResto</title>
+    <link rel="stylesheet" href="Assets/CSS/Theme.css">
+    <link rel="stylesheet" href="Assets/CSS/Header.css">
+    <link rel="stylesheet" href="Assets/CSS/Form.css">
+    <link rel="stylesheet" href="Assets/CSS/Grid.css">
+    <link rel="stylesheet" href="Assets/CSS/Composantes.css">
+    <link rel="stylesheet" href="Assets/CSS/Dashboard.css">
+</head>
+<body>
+    <nav class="main-navbar">
+        <div class="logo-container"><h1>PointeResto Pro</h1></div>
+        <div class="nav-links">
+            <button class="btn-login hidden" id="btn-logout" onclick="Auth.logout()">Déconnexion</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Zone Connexion Privée -->
+        <div id="auth-form-block" class="search-wrapper row-layout">
+            <h2>Connexion Restaurateur</h2>
+            <input type="email" id="auth-email" class="input-field" placeholder="Ex: patrick.ngoma@gmail.com">
+            <input type="password" id="auth-password" class="input-field" placeholder="••••••••">
+            <button class="btn-submit" id="btn-do-login">Se connecter</button>
+        </div>
+
+        <!-- Zone Administration Privée -->
+        <div id="dashboard-content" class="hidden">
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-restos">-</div>
+                    <div class="stat-label">Établissements</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-rating">-</div>
+                    <div class="stat-label">Note Globale</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-avis">-</div>
+                    <div class="stat-label">Avis Reçus</div>
+                </div>
+            </div>
+            <div class="management-box">
+                <h3>Statut de disponibilité en direct (Restaurant ID: 1)</h3>
+                <div class="radio-group">
+                    <button class="btn-submit status-ouvert" onclick="changeStatus('Ouvert', 1)">Passer en : Ouvert</button>
+                    <button class="btn-submit status-ferme" onclick="changeStatus('Fermé', 1)">Passer en : Fermé</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="Assets/JS/api.js"></script>
+    <script src="Assets/JS/Auth.js"></script>
+    <script src="Assets/JS/Dashboard.js"></script>
+    <script>
+        document.getElementById('btn-do-login').addEventListener('click', async () => {
+            if(await Auth.login(document.getElementById('auth-email').value, document.getElementById('auth-password').value)) {
+                window.location.reload();
+            } else { alert('Identifiants invalides pour l\'espace professionnel.'); }
+        });
+        if(Auth.getUser()) {
+            document.getElementById('auth-form-block').classList.add('hidden');
+            document.getElementById('dashboard-content').classList.remove('hidden');
+            document.getElementById('btn-logout').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
