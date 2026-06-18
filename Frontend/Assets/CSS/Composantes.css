@@ -1,0 +1,98 @@
+.restaurant-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.02);
+}
+.card-img-top {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+.card-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: white;
+}
+.status-ouvert { background-color: #2e7d32; }
+.status-ferme-bientot { background-color: #ef6c00; }
+.status-ferme { background-color: #c62828; }
+
+.btn-fav-card {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--white);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    font-size: 1.2rem;
+}
+.card-body { 
+    padding: 1.2rem; 
+}
+
+.card-title { 
+    font-size: 1.3rem; 
+    margin-bottom: 0.3rem; 
+}
+
+.card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--border);
+}
+
+.rating-pill { 
+    background: #FFF8E1; 
+    color: #FFB300; 
+    padding: 0.3rem; 
+    border-radius: 6px; 
+}
+
+/* Nouveaux styles isolés pour l'accueil et les modales */
+.welcome-box { 
+    margin-top: 15vh; 
+    text-align: center; 
+}
+
+.welcome-title { 
+    color: var(--primary); 
+    font-size: 2.5rem; 
+    margin-bottom: 0.5rem; 
+}
+
+.separator { 
+    border: 0; 
+    border-top: 1px solid var(--border); 
+    width: 100%; 
+    margin: 1rem 0;
+}
+
+.full-width { 
+    width: 100%; 
+    padding: 0.8rem; 
+}
+
+.modal-select { 
+    margin-bottom: 1rem; 
+}
+
+.modal-text { 
+    height: 100px; 
+    resize: none; 
+    margin-bottom: 1.5rem; }

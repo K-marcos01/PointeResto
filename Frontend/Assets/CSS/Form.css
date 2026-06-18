@@ -1,0 +1,36 @@
+.search-wrapper {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.input-field, .select-field {
+    width: 100%;
+    padding: 1rem 1.2rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 1rem;
+    background-color: var(--light);
+    transition: var(--transition);
+    outline: none;
+}
+
+.input-field:focus, .select-field:focus {
+    border-color: var(--primary);
+    background-color: var(--white);
+    box-shadow: 0 0 0 4px rgba(230, 81, 0, 0.1);
+}
+
+.btn-submit {
+    background-color: var(--primary);
+    color: var(--white);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}

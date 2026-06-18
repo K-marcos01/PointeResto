@@ -1,0 +1,61 @@
+.restaurant-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.02);
+}
+.card-img-top {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+/* Style du bouton favoris (petit cœur sur l'image) */
+.btn-fav-card {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--white);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+.btn-fav-card:hover { transform: scale(1.1); }
+
+/* Alignement en ligne des boutons d'actions */
+.card-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+/* Style propre et harmonisé pour Menu, Avis, S'orienter */
+.btn-action {
+    padding: 0.6rem 0.3rem;
+    font-size: 0.85rem;
+    border: 1px solid var(--border);
+    background: var(--light);
+    color: var(--dark);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+    text-align: center;
+}
+.btn-action:hover {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+}
+.card-body { padding: 1.2rem; }
+.card-title { font-size: 1.3rem; margin-bottom: 0.3rem; }

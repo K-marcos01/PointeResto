@@ -1,0 +1,95 @@
+.sheet-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .sheet-subtitle {
+            font-size: 0.875rem;
+            color: #757575;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.9rem 1.1rem;
+            border: 1.5px solid #E0E0E0;
+            border-radius: 14px;
+            font-size: 1rem;
+            background: #F9F9F9;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            color: #1A1A1A;
+        }
+
+        .input-field:focus {
+            border-color: #E65100;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(230, 81, 0, 0.12);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: #E65100;
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-primary:disabled { background: #BDBDBD; cursor: not-allowed; }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #BDBDBD;
+            font-size: 0.85rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #E0E0E0;
+        }
+
+        .btn-guest {
+            width: 100%;
+            padding: 0.9rem;
+            background: transparent;
+            color: #757575;
+            border: 1.5px solid #E0E0E0;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .btn-guest:hover, .btn-guest:active {
+            border-color: #E65100;
+            color: #E65100;
+        }
+
+        #login-error {
+            font-size: 0.875rem;
+            color: #c62828;
+            text-align: center;
+            display: none;
+            padding: 0.5rem 0.75rem;
+            background: #FFEBEE;
+            border-radius: 10px;
+        }
