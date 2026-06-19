@@ -17,9 +17,22 @@ class Review {
     }
 
     public function createReview($data) {
-        $sql = "INSERT INTO avis (restaurant_id, utilisateur_id, note, commentaire, est_anonyme, adresse_ip) 
-                VALUES (:restaurant_id, :utilisateur_id, :note, :commentaire, :est_anonyme, :adresse_ip)";
+        $estAnonyme = empty($data['utilisateur_id']);
+
+        $sql = "INSERT INTO avis
+                    (restaurant_id, utilisateur_id, note, commentaire, est_anonyme, nom_anonyme, adresse_ip, statut_moderation)
+                VALUES
+                    (:restaurant_id, :utilisateur_id, :note, :commentaire, :est_anonyme, :nom_anonyme, :adresse_ip, 'approuve')";
+
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute($data);
+        return $stmt->execute([
+            ':restaurant_id'  => $data['restaurant_id'],
+            ':utilisateur_id' => $estAnonyme ? null : $data['utilisateur_id'],
+            ':note'           => $data['note'],
+            ':commentaire'    => $data['commentaire'] ?? null,
+            ':est_anonyme'    => $estAnonyme ? 't' : 'f',
+            ':nom_anonyme'    => $estAnonyme ? ($data['nom_anonyme'] ?? 'Visiteur Anonyme') : null,
+            ':adresse_ip'     => $data['adresse_ip'] ?? null,
+        ]);
     }
 }
