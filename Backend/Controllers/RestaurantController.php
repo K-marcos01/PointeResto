@@ -16,6 +16,18 @@ class RestaurantController {
             return;
         }
 
+        if ($action === 'detail') {
+            $id = intval($_GET['id'] ?? 0);
+            $restaurant = $this->restaurantModel->getById($id);
+            if ($restaurant) {
+                echo json_encode($restaurant);
+            } else {
+                http_response_code(404);
+                echo json_encode(["message" => "Restaurant introuvable."]);
+            }
+            return;
+        }
+
         if ($action === 'list') {
             $workspace = !empty($_GET['workspace']) ? intval($_GET['workspace']) : null;
             $search = !empty($_GET['search']) ? trim($_GET['search']) : null;
