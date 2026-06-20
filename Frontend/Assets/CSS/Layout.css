@@ -6,6 +6,11 @@
     transition: var(--transition);
     position: relative;
     border: 1px solid rgba(0,0,0,0.02);
+    cursor: pointer;
+}
+.restaurant-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.08);
 }
 .card-img-top {
     width: 100%;
@@ -29,33 +34,41 @@
     align-items: center;
     justify-content: center;
     transition: var(--transition);
+    z-index: 2;
 }
 .btn-fav-card:hover { transform: scale(1.1); }
 
-/* Alignement en ligne des boutons d'actions */
-.card-actions {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-    margin-top: 1rem;
+.card-status-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 30px;
+    font-size: 0.72rem;
+    font-weight: bold;
+    color: white;
+    z-index: 2;
 }
-/* Style propre et harmonisé pour Menu, Avis, S'orienter */
-.btn-action {
-    padding: 0.6rem 0.3rem;
-    font-size: 0.85rem;
-    border: 1px solid var(--border);
-    background: var(--light);
-    color: var(--dark);
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: var(--transition);
-    text-align: center;
-}
-.btn-action:hover {
-    background: var(--primary);
-    color: var(--white);
-    border-color: var(--primary);
-}
+.status-ouvert        { background-color: #2e7d32; }
+.status-ferme-bientot { background-color: #ef6c00; }
+.status-fermé         { background-color: #c62828; }
+
 .card-body { padding: 1.2rem; }
 .card-title { font-size: 1.3rem; margin-bottom: 0.3rem; }
+.card-address {
+    font-size: 0.88rem;
+    color: var(--gray);
+    margin-bottom: 0.6rem;
+}
+.card-footer-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-top: 0.5rem;
+}
+.card-rating {
+    color: #FFB300;
+    font-weight: 600;
+}

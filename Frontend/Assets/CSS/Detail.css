@@ -1,0 +1,341 @@
+/* ============================================================
+   Détail.html — page complète d'un restaurant
+   ============================================================ */
+
+.detail-hero {
+    position: relative;
+    height: 260px;
+    overflow: hidden;
+}
+.detail-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.detail-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.05) 55%, transparent 100%);
+}
+
+.detail-back-btn {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 5;
+    background: rgba(255,255,255,0.92);
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    color: var(--dark);
+}
+
+.detail-fav-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 5;
+    background: rgba(255,255,255,0.92);
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+}
+
+.detail-hero-text {
+    position: absolute;
+    bottom: 1rem;
+    left: 1.2rem;
+    right: 1.2rem;
+    z-index: 4;
+    color: #fff;
+}
+
+.detail-title {
+    font-size: 1.7rem;
+    font-weight: 800;
+    margin-bottom: 0.2rem;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.detail-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.detail-status-row {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem 1.2rem 0;
+    flex-wrap: wrap;
+}
+
+.detail-pill {
+    padding: 0.35rem 0.8rem;
+    border-radius: 30px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.detail-description {
+    padding: 1rem 1.2rem 0;
+    color: var(--gray);
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+/* Onglets */
+.detail-tabs {
+    display: flex;
+    gap: 0.4rem;
+    padding: 1.2rem 1.2rem 0;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--light);
+    z-index: 10;
+}
+
+.detail-tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.8rem 0.5rem;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--gray);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.detail-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.detail-panel {
+    padding: 1.2rem;
+    display: none;
+}
+
+.detail-panel.active {
+    display: block;
+}
+
+/* Menus dans le détail */
+.menu-category-title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gray);
+    margin: 1.4rem 0 0.7rem;
+}
+.menu-category-title:first-child { margin-top: 0; }
+
+.menu-dish-card {
+    display: flex;
+    gap: 0.9rem;
+    background: var(--white);
+    border-radius: 14px;
+    padding: 0.7rem;
+    margin-bottom: 0.7rem;
+    box-shadow: var(--shadow);
+    align-items: center;
+}
+
+.menu-dish-img {
+    width: 64px;
+    height: 64px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.menu-dish-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.menu-dish-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.15rem;
+}
+
+.menu-dish-desc {
+    font-size: 0.8rem;
+    color: var(--gray);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.menu-dish-price {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    margin-left: auto;
+    padding-left: 0.5rem;
+}
+
+/* Avis */
+.review-add-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 1rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.2rem;
+}
+
+.review-add-title {
+    font-weight: 700;
+    margin-bottom: 0.7rem;
+    font-size: 0.95rem;
+}
+
+.star-picker {
+    display: flex;
+    gap: 0.3rem;
+    margin-bottom: 0.8rem;
+}
+
+.star-picker button {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    color: var(--border);
+    transition: var(--transition);
+    line-height: 1;
+    padding: 0;
+}
+
+.star-picker button.filled {
+    color: #FFB300;
+}
+
+.review-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 1rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 0.8rem;
+}
+
+.review-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.4rem;
+}
+
+.review-author {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.review-stars {
+    color: #FFB300;
+    font-size: 0.85rem;
+}
+
+.review-date {
+    font-size: 0.75rem;
+    color: var(--gray);
+    margin-top: 0.1rem;
+}
+
+.review-comment {
+    font-size: 0.88rem;
+    color: var(--dark);
+    line-height: 1.5;
+}
+
+.review-own-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    background: var(--primary-light);
+    color: #7a3c00;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    margin-left: 0.4rem;
+    font-weight: 700;
+}
+
+.review-edit-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    color: var(--gray);
+}
+.review-edit-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--gray);
+    padding: 2rem 1rem;
+    font-size: 0.9rem;
+}
+
+/* S'orienter */
+.orient-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 1.2rem;
+    box-shadow: var(--shadow);
+}
+
+.orient-address {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.orient-map-frame {
+    width: 100%;
+    height: 220px;
+    border-radius: 12px;
+    border: none;
+    margin-bottom: 1rem;
+}
+
+.orient-phone-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.92rem;
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
+
+@media (min-width: 700px) {
+    .detail-hero { height: 340px; }
+    .detail-title { font-size: 2.2rem; }
+}

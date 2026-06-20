@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PointeResto — Inscription</title>
+    <link rel="stylesheet" href="Assets/CSS/Theme.css">
+    <link rel="stylesheet" href="Assets/CSS/AuthSheet.css">
+    <link rel="stylesheet" href="Assets/CSS/Toast.css">
+</head>
+<body class="auth-body">
+
+    <div class="hero">
+        <img src="Assets/Image/Logo.jpeg" alt="Logo PointeResto" class="hero-logo">
+        <h1 class="hero-title">PointeResto</h1>
+        <p class="hero-subtitle">Rejoignez la communauté gastronomique de Pointe-Noire</p>
+    </div>
+
+    <div class="sheet">
+        <div class="sheet-handle"></div>
+        <p class="sheet-title">Créer un compte</p>
+        <p class="sheet-subtitle">Quelques infos pour commencer.</p>
+
+        <div class="input-group">
+            <div class="input-row">
+                <input type="text" id="reg-prenom" class="auth-input"
+                       placeholder="Prénom" autocomplete="given-name">
+                <input type="text" id="reg-nom" class="auth-input"
+                       placeholder="Nom" autocomplete="family-name">
+            </div>
+            <input type="email" id="reg-email" class="auth-input"
+                   placeholder="Votre adresse email" autocomplete="email">
+            <input type="password" id="reg-password" class="auth-input"
+                   placeholder="Mot de passe (6 caractères min.)" autocomplete="new-password">
+        </div>
+
+        <p id="reg-error" class="auth-error"></p>
+
+        <button class="btn-primary" id="btn-register-submit">Créer mon compte</button>
+
+        <p class="auth-switch-link">
+            Déjà un compte ? <a href="Connexion.html">Se connecter</a>
+        </p>
+
+        <div class="divider">ou</div>
+
+        <button class="btn-guest" id="btn-guest-explore">
+            Explorer sans compte →
+        </button>
+    </div>
+
+    <script src="Assets/JS/api.js"></script>
+    <script src="Assets/JS/Auth.js"></script>
+    <script src="Assets/JS/Toast.js"></script>
+    <script src="Assets/JS/Register.js"></script>
+</body>
+</html>

@@ -1,6 +1,8 @@
+// ============================================================
 //  API PointeResto
 //  En local  → http://localhost/PointeResto/Backend/Public/Index.php
 //  En prod   → backend Railway (sert Backend/Public comme racine)
+// ============================================================
 
 // Détection automatique : local vs production (GitHub Pages)
 const IS_LOCAL = window.location.hostname === 'localhost'
@@ -22,8 +24,14 @@ const API = {
             }
         });
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`Erreur API GET [${route}] : ${response.status}`);
-        return await response.json();
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            const err = new Error(body.message || `Erreur API GET [${route}] : ${response.status}`);
+            err.status = response.status;
+            err.body = body;
+            throw err;
+        }
+        return body;
     },
 
     async post(route, data) {
@@ -33,7 +41,13 @@ const API = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
-        if (!response.ok) throw new Error(`Erreur API POST [${route}] : ${response.status}`);
-        return await response.json();
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            const err = new Error(body.message || `Erreur API POST [${route}] : ${response.status}`);
+            err.status = response.status;
+            err.body = body;
+            throw err;
+        }
+        return body;
     }
 };

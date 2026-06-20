@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PointeResto — Connexion</title>
     <link rel="stylesheet" href="Assets/CSS/Theme.css">
-    <link rel="stylesheet" href="Assets/CSS/Connexion.css">
-    <link rel="stylesheet" href="Assets/CSS/Connexion2.css">
-    <link rel="stylesheet" href="Assets/CSS/Media.css">
+    <link rel="stylesheet" href="Assets/CSS/AuthSheet.css">
+    <link rel="stylesheet" href="Assets/CSS/Toast.css">
 </head>
-<body>
+<body class="auth-body">
 
     <div class="hero">
         <img src="Assets/Image/Logo.jpeg" alt="Logo PointeResto" class="hero-logo">
@@ -23,15 +22,19 @@
         <p class="sheet-subtitle">Connectez-vous ou explorez sans compte.</p>
 
         <div class="input-group">
-            <input type="email" id="login-email" class="input-field"
+            <input type="email" id="login-email" class="auth-input"
                    placeholder="Votre adresse email" autocomplete="email">
-            <input type="password" id="login-password" class="input-field"
+            <input type="password" id="login-password" class="auth-input"
                    placeholder="Mot de passe" autocomplete="current-password">
         </div>
 
-        <p id="login-error"></p>
+        <p id="login-error" class="auth-error"></p>
 
         <button class="btn-primary" id="btn-login-submit">Se connecter</button>
+
+        <p class="auth-switch-link">
+            Pas de compte ? <a href="Inscription.html">Créer un compte</a>
+        </p>
 
         <div class="divider">ou</div>
 
@@ -42,6 +45,7 @@
 
     <script src="Assets/JS/api.js"></script>
     <script src="Assets/JS/Auth.js"></script>
+    <script src="Assets/JS/Toast.js"></script>
     <script src="Assets/JS/Login.js"></script>
 </body>
 </html>
