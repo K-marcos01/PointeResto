@@ -7,7 +7,7 @@ class Menu {
     }
 
     public function getMenuByRestaurant($restaurantId) {
-        $sql = "SELECT id_menu, titre, description, prix, disponible, categorie 
+        $sql = "SELECT id_menu, titre, description, prix, disponible, categorie, image_url 
                 FROM menus 
                 WHERE restaurant_id = :restaurant_id AND disponible = TRUE 
                 ORDER BY categorie ASC, titre ASC";

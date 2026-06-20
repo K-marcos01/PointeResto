@@ -32,4 +32,13 @@ class Restaurant {
         $sql = "SELECT id_workspace, nom_quartier FROM workspaces ORDER BY nom_quartier ASC";
         return $this->db->query($sql)->fetchAll();
     }
+
+    public function getById($id) {
+        $sql = "SELECT r.*, w.nom_quartier FROM restaurants r 
+                LEFT JOIN workspaces w ON r.workspace_id = w.id_workspace 
+                WHERE r.id_restaurant = :id AND r.est_valide = TRUE";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch();
+    }
 }

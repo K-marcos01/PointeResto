@@ -35,4 +35,27 @@ class Review {
             ':adresse_ip'     => $data['adresse_ip'] ?? null,
         ]);
     }
+
+    /** Modifie un avis — uniquement si l'auteur correspond (sécurité).
+     * Les avis anonymes (utilisateur_id NULL) ne sont pas modifiables via cette méthode.
+     */
+    public function updateReview($idAvis, $utilisateurId, $note, $commentaire) {
+        if ($utilisateurId <= 0) {
+            return false;
+        }
+
+        $sql = "UPDATE avis
+                SET note = :note, commentaire = :commentaire
+                WHERE id_avis = :id_avis AND utilisateur_id = :utilisateur_id";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':note'           => $note,
+            ':commentaire'    => $commentaire,
+            ':id_avis'        => $idAvis,
+            ':utilisateur_id' => $utilisateurId,
+        ]);
+
+        return $stmt->rowCount() > 0;
+    }
 }
