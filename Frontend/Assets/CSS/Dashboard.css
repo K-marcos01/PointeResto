@@ -1,51 +1,268 @@
+/* ============================================================
+   Dashboard.css — Espace Restaurateur PointeResto
+   Cohérent avec Theme.css (mêmes variables)
+   ============================================================ */
+
+/* Stats en haut */
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 3rem;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
 }
 
 .stat-card {
     background: var(--white);
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     text-align: center;
 }
 
 .stat-number {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 800;
     color: var(--primary);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
+    line-height: 1;
 }
 
 .stat-label {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     color: var(--gray);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.08em;
 }
 
-.management-box {
+/* Sélecteur de restaurant */
+.restaurant-selector {
     background: var(--white);
-    padding: 2.5rem;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-}
-
-.radio-group {
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1.5rem;
     display: flex;
+    align-items: center;
     gap: 1rem;
-    margin: 1.5rem 0;
+    flex-wrap: wrap;
 }
 
-.radio-tile {
+.restaurant-selector label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.restaurant-selector select {
     flex: 1;
-    border: 2px solid var(--border);
-    padding: 1rem;
+    padding: 0.6rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.95rem;
+    background: var(--light);
+    outline: none;
+    cursor: pointer;
+}
+
+.restaurant-selector select:focus {
+    border-color: var(--primary);
+}
+
+/* Onglets du dashboard */
+.dash-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+}
+
+.dash-tab {
+    padding: 0.85rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--gray);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition);
+}
+
+.dash-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.dash-panel { display: none; }
+.dash-panel.active { display: block; }
+
+/* Statut */
+.status-buttons {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.btn-status {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.8rem 1rem;
+    border: none;
     border-radius: 12px;
-    text-align: center;
+    font-weight: 700;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: var(--transition);
+    color: #fff;
+}
+
+.btn-status.ouvert        { background: #2e7d32; }
+.btn-status.ferme-bientot { background: #ef6c00; }
+.btn-status.ferme         { background: #c62828; }
+.btn-status:active        { transform: scale(0.97); }
+
+/* Section générique */
+.dash-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+}
+
+.dash-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
+
+/* Formulaire d'ajout de plat */
+.menu-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.2rem;
+}
+
+.menu-form .full-width { grid-column: 1 / -1; }
+
+.dash-input {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    background: var(--light);
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.dash-input:focus { border-color: var(--primary); background: var(--white); }
+
+.btn-dash-primary {
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-dash-primary:hover { opacity: 0.9; }
+
+/* Liste des plats */
+.menu-item-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.menu-item-row:last-child { border-bottom: none; }
+
+.menu-item-info { flex: 1; min-width: 0; }
+.menu-item-title { font-weight: 600; font-size: 0.92rem; }
+.menu-item-meta  { font-size: 0.78rem; color: var(--gray); }
+.menu-item-price { font-weight: 700; color: var(--primary); white-space: nowrap; }
+
+.btn-icon {
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.btn-icon:hover { border-color: var(--primary); color: var(--primary); }
+.btn-icon.danger:hover { border-color: #c62828; color: #c62828; }
+
+/* Avis */
+.avis-card {
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+}
+
+.avis-card:last-child { border-bottom: none; }
+
+.avis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.4rem;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.avis-author { font-weight: 600; font-size: 0.9rem; }
+.avis-stars  { color: #FFB300; font-size: 0.85rem; }
+.avis-resto  { font-size: 0.75rem; color: var(--gray); margin-bottom: 0.3rem; }
+.avis-comment { font-size: 0.88rem; margin-bottom: 0.6rem; line-height: 1.5; }
+
+.avis-reponse-box {
+    background: var(--light);
+    border-radius: 10px;
+    padding: 0.7rem;
+    font-size: 0.83rem;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+    border-left: 3px solid var(--primary);
+}
+
+.avis-reponse-form { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+.avis-reponse-form textarea {
+    flex: 1;
+    padding: 0.6rem 0.8rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    resize: none;
+    font-family: inherit;
+    outline: none;
+}
+.avis-reponse-form textarea:focus { border-color: var(--primary); }
+
+/* Mobile */
+@media (max-width: 600px) {
+    .dashboard-grid { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+    .stat-card { padding: 1rem 0.5rem; }
+    .stat-number { font-size: 1.4rem; }
+    .stat-label { font-size: 0.65rem; }
+    .menu-form { grid-template-columns: 1fr; }
+    .menu-form .full-width { grid-column: 1; }
 }

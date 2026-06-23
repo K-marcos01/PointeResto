@@ -3,71 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espace Professionnel - PointeResto</title>
+    <title>PointeResto Pro — Espace Restaurateur</title>
     <link rel="stylesheet" href="Assets/CSS/Theme.css">
     <link rel="stylesheet" href="Assets/CSS/Header.css">
     <link rel="stylesheet" href="Assets/CSS/Form.css">
-    <link rel="stylesheet" href="Assets/CSS/Grid.css">
-    <link rel="stylesheet" href="Assets/CSS/Composantes.css">
+    <link rel="stylesheet" href="Assets/CSS/Toast.css">
     <link rel="stylesheet" href="Assets/CSS/Dashboard.css">
 </head>
 <body>
     <nav class="main-navbar">
-        <div class="logo-container"><h1>PointeResto Pro</h1></div>
+        <a href="Index.html" class="logo-link">
+            <img src="Assets/Image/Logo.jpeg" alt="Logo" class="logo-icon">
+            <h1 class="logo-title">PointeResto <span style="color:var(--gray); font-size:0.7em;">Pro</span></h1>
+        </a>
         <div class="nav-links">
-            <button class="btn-login hidden" id="btn-logout" onclick="Auth.logout()">Déconnexion</button>
+            <button class="btn-navbar-action" id="btn-logout">Déconnexion</button>
         </div>
     </nav>
 
     <main class="container">
-        <!-- Zone Connexion Privée -->
-        <div id="auth-form-block" class="search-wrapper row-layout">
-            <h2>Connexion Restaurateur</h2>
-            <input type="email" id="auth-email" class="input-field" placeholder="Ex: patrick.ngoma@gmail.com">
-            <input type="password" id="auth-password" class="input-field" placeholder="••••••••">
-            <button class="btn-submit" id="btn-do-login">Se connecter</button>
+
+        <!-- Bienvenue + stats -->
+        <p id="welcome-msg" style="margin-bottom:1.2rem; font-size:0.95rem; color:var(--gray);"></p>
+
+        <div class="dashboard-grid" id="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="stat-restos">—</div>
+                <div class="stat-label">Établissements</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="stat-rating">—</div>
+                <div class="stat-label">Note Globale</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="stat-avis">—</div>
+                <div class="stat-label">Avis Reçus</div>
+            </div>
         </div>
 
-        <!-- Zone Administration Privée -->
-        <div id="dashboard-content" class="hidden">
-            <div class="dashboard-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="stat-restos">-</div>
-                    <div class="stat-label">Établissements</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="stat-rating">-</div>
-                    <div class="stat-label">Note Globale</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="stat-avis">-</div>
-                    <div class="stat-label">Avis Reçus</div>
-                </div>
-            </div>
-            <div class="management-box">
-                <h3>Statut de disponibilité en direct (Restaurant ID: 1)</h3>
-                <div class="radio-group">
-                    <button class="btn-submit status-ouvert" onclick="changeStatus('Ouvert', 1)">Passer en : Ouvert</button>
-                    <button class="btn-submit status-ferme" onclick="changeStatus('Fermé', 1)">Passer en : Fermé</button>
+        <!-- Sélecteur de restaurant -->
+        <div class="restaurant-selector">
+            <label for="resto-select">Mon établissement :</label>
+            <select id="resto-select">
+                <option value="">Chargement…</option>
+            </select>
+        </div>
+
+        <!-- Onglets -->
+        <div class="dash-tabs">
+            <button class="dash-tab active" data-tab="statut"   onclick="switchTab('statut')">📡 Statut</button>
+            <button class="dash-tab"        data-tab="menus"    onclick="switchTab('menus')">🍽️ Menus</button>
+            <button class="dash-tab"        data-tab="avis"     onclick="switchTab('avis')">💬 Avis</button>
+        </div>
+
+        <!-- Onglet Statut -->
+        <div class="dash-panel active" id="panel-statut">
+            <div class="dash-section">
+                <p class="dash-section-title">Statut d'ouverture</p>
+                <p style="font-size:0.88rem; color:var(--gray); margin-bottom:0.5rem;">
+                    Statut actuel : <strong id="current-status">—</strong>
+                </p>
+                <div class="status-buttons">
+                    <button class="btn-status ouvert"        onclick="changeStatus('Ouvert')">✅ Ouvert</button>
+                    <button class="btn-status ferme-bientot" onclick="changeStatus('Ferme bientot')">⏳ Ferme bientôt</button>
+                    <button class="btn-status ferme"         onclick="changeStatus('Fermé')">🔴 Fermé</button>
                 </div>
             </div>
         </div>
+
+        <!-- Onglet Menus -->
+        <div class="dash-panel" id="panel-menus">
+            <div class="dash-section">
+                <p class="dash-section-title">Ajouter un plat</p>
+                <div class="menu-form" id="menu-form">
+                    <input type="text"   id="m-titre"       class="dash-input full-width" placeholder="Nom du plat *">
+                    <input type="text"   id="m-categorie"   class="dash-input" placeholder="Catégorie (ex: Plat, Entrée)">
+                    <input type="number" id="m-prix"        class="dash-input" placeholder="Prix (FCFA) *" min="0">
+                    <textarea            id="m-description" class="dash-input full-width" rows="2" placeholder="Description (optionnel)"></textarea>
+                    <input type="url"    id="m-image"       class="dash-input full-width" placeholder="URL de l'image (optionnel)">
+                    <button class="btn-dash-primary full-width" id="btn-add-menu" onclick="submitMenu()">
+                        + Ajouter ce plat
+                    </button>
+                </div>
+            </div>
+            <div class="dash-section">
+                <p class="dash-section-title">Carte actuelle</p>
+                <div id="menus-list"><p style="color:var(--gray); font-size:0.9rem;">Sélectionnez un restaurant.</p></div>
+            </div>
+        </div>
+
+        <!-- Onglet Avis -->
+        <div class="dash-panel" id="panel-avis">
+            <div id="avis-list"><p style="color:var(--gray); font-size:0.9rem; padding:1rem 0;">Chargement…</p></div>
+        </div>
+
     </main>
 
     <script src="Assets/JS/api.js"></script>
     <script src="Assets/JS/Auth.js"></script>
+    <script src="Assets/JS/Toast.js"></script>
     <script src="Assets/JS/Dashboard.js"></script>
-    <script>
-        document.getElementById('btn-do-login').addEventListener('click', async () => {
-            if(await Auth.login(document.getElementById('auth-email').value, document.getElementById('auth-password').value)) {
-                window.location.reload();
-            } else { alert('Identifiants invalides pour l\'espace professionnel.'); }
-        });
-        if(Auth.getUser()) {
-            document.getElementById('auth-form-block').classList.add('hidden');
-            document.getElementById('dashboard-content').classList.remove('hidden');
-            document.getElementById('btn-logout').classList.remove('hidden');
-        }
-    </script>
 </body>
 </html>
