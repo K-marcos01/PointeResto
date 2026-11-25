@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PointeResto - Guide Gastronomique</title>
+    <title>PointeResto — Guide Gastronomique de Pointe-Noire</title>
     <link rel="stylesheet" href="Assets/CSS/Theme.css">
     <link rel="stylesheet" href="Assets/CSS/Header.css">
     <link rel="stylesheet" href="Assets/CSS/Form.css">
@@ -15,21 +15,59 @@
     <nav class="main-navbar">
         <a href="Index.html" class="logo-link">
             <img src="Assets/Image/Logo.jpeg" alt="Logo PointeResto" class="logo-icon">
-            <h1 class="logo-title">PointeResto</h1>
+            <div class="logo-text-group">
+                <h1 class="logo-title">PointeResto</h1>
+                <span class="logo-tagline">Pointe-Noire • Congo</span>
+            </div>
         </a>
         <div class="nav-links">
-            <button class="btn-navbar-action" id="btn-toggle-favs">Favoris (<span id="fav-count">0</span>)</button>
-            <a href="Connexion.html" class="btn-navbar-link">Connexion / Pro</a>
+            <button type="button" class="btn-navbar-action" id="btn-toggle-favs">
+                ❤️ Favoris (<span id="fav-count">0</span>)
+            </button>
+            <span id="nav-auth-slot">
+                <a href="Connexion.html" class="btn-navbar-link">Connexion / Pro</a>
+            </span>
         </div>
     </nav>
 
-    <main class="container">
-        <section class="search-wrapper">
-            <input type="text" id="search-input" class="input-field" placeholder="Rechercher un plat, un maquis...">
-            <select id="quartier-select" class="select-field" aria-label="Filtrer par quartier">
-                <option value="">Tous les quartiers</option>
-            </select>
+    <header class="home-hero">
+        <div class="home-hero-overlay"></div>
+        <div class="home-hero-content">
+            <span class="hero-location-pill">📍 Côte Sauvage • Centre-Ville • Tié-Tié • Mpaka</span>
+            <h2 class="home-hero-title">Savourez le meilleur de Pointe-Noire</h2>
+            <p class="home-hero-desc">
+                Capitaine braisé face à l'océan, saka-saka maison ou tables gastronomiques : trouvez votre prochaine adresse en temps réel.
+            </p>
+        </div>
+    </header>
+
+    <main class="container home-main">
+        <section class="search-wrapper" aria-label="Recherche d'établissements">
+            <div class="search-input-box">
+                <span class="search-icon" aria-hidden="true">🔍</span>
+                <input type="text" id="search-input" class="input-field search-with-icon"
+                       placeholder="Rechercher un restaurant, du saka-saka, du capitaine...">
+            </div>
+            <div class="search-select-box">
+                <select id="quartier-select" class="select-field" aria-label="Filtrer par quartier">
+                    <option value="">Tous les quartiers</option>
+                </select>
+            </div>
         </section>
+
+        <div class="quick-filters" id="quick-filters" role="group" aria-label="Filtres rapides">
+            <button type="button" class="filter-chip active" data-filter="all">Tout voir</button>
+            <button type="button" class="filter-chip" data-filter="open">🟢 Ouverts maintenant</button>
+            <button type="button" class="filter-chip" data-filter="Fruits de Mer">🦞 Fruits de mer</button>
+            <button type="button" class="filter-chip" data-filter="Maquis">🍲 Maquis</button>
+            <button type="button" class="filter-chip" data-filter="Grillade">🔥 Grillades</button>
+            <button type="button" class="filter-chip" data-filter="Traditionnel">🌴 Traditionnel</button>
+        </div>
+
+        <div class="results-toolbar">
+            <p id="results-count" class="results-count">Chargement des établissements…</p>
+        </div>
+
         <section id="restaurants-container" class="restaurants-grid"></section>
     </main>
 

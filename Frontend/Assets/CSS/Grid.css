@@ -1,14 +1,18 @@
 .restaurants-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 1.6rem;
 }
 
 @media (max-width: 768px) {
     .restaurants-grid {
         grid-template-columns: 1fr;
+        gap: 1.2rem;
     }
     .search-wrapper {
         flex-direction: column;
+    }
+    .search-select-box {
+        min-width: 100%;
     }
 }
