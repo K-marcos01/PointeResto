@@ -175,27 +175,34 @@ INSERT INTO medias (restaurant_id, nom_fichier, type_mime, taille, chemin_fichie
 (19, 'bar-plage-atlantique-soiree.jpg',    'image/jpeg', 351.20, 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&q=80'),
 (20, 'chez-fifi-grillades-brochettes.jpg', 'image/jpeg', 326.70, 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80');
 
--- Menus représentatifs avec visuels
+-- Menus représentatifs avec compositions détaillées et visuels variés
 INSERT INTO menus (restaurant_id, titre, description, prix, disponible, categorie, image_url) VALUES
--- La Paillote
-(1, 'Poulet Braisé Royal',    'Poulet entier braisé aux épices locales, servi avec alloco et salade',        6500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&q=80'),
-(1, 'Capitaine Grillé',       'Filet de capitaine grillé sur charbon, riz blanc et légumes de saison',       8000,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1535400255456-067e2bc1c0e2?w=400&q=80'),
-(1, 'Saka-Saka Traditionnel', 'Feuilles de manioc pilées au poisson salé, banane plantain et piment',        3500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1604908554007-31be7e0d3c0a?w=400&q=80'),
--- Le Derrick
-(4, 'Plateau Fruits de Mer',  'Crevettes géantes, calamars et palourdes au beurre citronné, frites maison', 12000, TRUE, 'Plat',    'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=400&q=80'),
-(4, 'Bar Rayé Sauce Mafé',    'Bar rayé entier en sauce mafé à l''arachide, riz parfumé',                    9500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?w=400&q=80'),
--- Maquis Chez Tantie
-(7, 'Plat du Jour',           'Plat unique quotidien selon arrivage : pondu, mosaka ou ntaba',                2000,  TRUE, 'Formule', 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80'),
-(7, 'Saka-Saka Maison',       'Feuilles de manioc pilées maison, poisson fumé, huile de palme rouge',        1500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=400&q=80'),
--- Fast Food Rond-Point
-(9, 'Menu Burger Classique',  'Double burger steak + fromage, frites maison, boisson fraîche',               3000,  TRUE, 'Formule', 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80'),
-(9, 'Chawarma Poulet',        'Chawarma poulet mariné, salade, sauce blanche, pain pita chaud',              2500,  TRUE, 'Snack',   'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&q=80'),
--- Pizza Kongossa
-(14,'Pizza Congolaise',       'Tomates, fromage, crevettes locales, piment doux et coriandre fraîche',       5500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1593504049359-74330189a345?w=400&q=80'),
-(14,'Pizza 4 Saisons',        'Jambon, champignons, artichauts, olives, sauce tomate maison',                5000,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80'),
--- Le Forestier
-(16,'Gibier du Jour',         'Viande de brousse en sauce, igname pilée et légumes forestiers',               9000,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1432139509613-5c4255815697?w=400&q=80'),
-(16,'Champignons Sauvages',   'Poêlée de champignons forestiers à l''ail et au persil, pain de manioc',       4500,  TRUE, 'Entrée',  'https://images.unsplash.com/photo-1504545102780-26774c1bb073?w=400&q=80');
+-- La Paillote (id 1)
+(1, 'Poulet Braisé Royal',    'Composition : poulet fermier entier mariné 12h à l''ail, gingembre frais, ciboule et poivre noir de Penja, braisé au feu de bois, accompagné de bananes plantains mûres frites (alloco) et crudités croquantes.', 6500, TRUE, 'Plat', 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=600&q=80'),
+(1, 'Capitaine Grillé',       'Composition : filet épais de capitaine pêché au large de Pointe-Noire, badigeonné d''huile citronnée et herbes fraîches, grillé sur charbon de bois, servi avec riz parfumé et légumes sautés.', 8000, TRUE, 'Plat', 'https://images.unsplash.com/photo-1535400255456-067e2bc1c0e2?w=600&q=80'),
+(1, 'Saka-Saka Traditionnel', 'Composition : jeunes feuilles de manioc pilées mijotées lentement à l''huile de palme rouge, poisson salé effiloché, aubergines africaines, ciboule et purée de banane plantain.', 3500, TRUE, 'Plat', 'https://images.unsplash.com/photo-1604908554007-31be7e0d3c0a?w=600&q=80'),
+-- Le Comptoir (id 2)
+(2, 'Pavé de Barracuda Rôti', 'Composition : filet de barracuda de l''Atlantique rôti au beurre d''agrumes, mousseline de patate douce, haricots verts croquants et émulsion au gingembre.', 11500, TRUE, 'Plat', 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80'),
+(2, 'Tartare de Thon Rouge',  'Composition : dés de thon rouge frais coupés au couteau, avocat mûr, coriandre ciselée, citron vert, huile de sésame grillé et chips de manioc.', 6500, TRUE, 'Entrée', 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80'),
+-- Le Derrick (id 4)
+(4, 'Plateau Fruits de Mer',  'Composition : gambas géantes de Côte Sauvage, anneaux de calamars tendres, palourdes et pinces de crabe sautés au beurre aillé et persil plat, servis avec frites maison.', 12000, TRUE, 'Plat', 'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=600&q=80'),
+(4, 'Bar Rayé Sauce Mafé',    'Composition : bar rayé entier grillé nappé d''une sauce onctueuse à la pâte d''arachide torréfiée, tomates fraîches, oignons doux et riz blanc vapeur.', 9500, TRUE, 'Plat', 'https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?w=600&q=80'),
+-- Chez Maman Joséphine (id 5)
+(5, 'Maboké de Poisson',      'Composition : poisson frais d''eau douce assaisonné aux épices du terroir, oignons, tomates et piment doux, cuit à l''étouffée dans des feuilles de marantacées avec manioc (chikwangue).', 4000, TRUE, 'Plat', 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80'),
+-- Maquis Chez Tantie (id 7)
+(7, 'Plat du Jour',           'Composition : recette familiale du jour selon le marché (pondu au poisson fumé, poulet moambe ou ntaba grillé), accompagné de riz, foufou ou chikwangue.', 2000, TRUE, 'Formule', 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80'),
+(7, 'Saka-Saka Maison',       'Composition : feuilles de manioc pilées au mortier, poisson fumé de rivière, pâte d''arachide légère, huile de palme rouge et bananes plantains bouillies.', 1500, TRUE, 'Plat', 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=600&q=80'),
+-- Braiserie du Peuple (id 8)
+(8, 'Brochettes Bœuf & Alloco','Composition : 4 brochettes de filet de bœuf marinées au gingembre et paprika fumé, saisies à la braise, servies avec alloco doré et sauce pimentée maison.', 3000, TRUE, 'Plat', 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80'),
+-- Fast Food Rond-Point (id 9)
+(9, 'Menu Burger Classique',  'Composition : pain brioché toasté, double steak haché de bœuf grillé, cheddar fondant, laitue croquante, tomates, oignons caramélisés, frites maison et boisson fraîche.', 3000, TRUE, 'Formule', 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80'),
+(9, 'Chawarma Poulet',        'Composition : galette libanaise chaude garnie d''émincé de poulet mariné aux épices douces, crudités, cornichons, frites et sauce blanche à l''ail.', 2500, TRUE, 'Snack', 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600&q=80'),
+-- Pizza Kongossa (id 14)
+(14,'Pizza Congolaise',       'Composition : pâte fine pétrie sur place, coulis de tomates fraîches, mozzarella fondante, crevettes de Pointe-Noire sautées, poivrons verts, oignons rouges et coriandre.', 5500, TRUE, 'Plat', 'https://images.unsplash.com/photo-1593504049359-74330189a345?w=600&q=80'),
+(14,'Pizza 4 Saisons',        'Composition : base tomate assaisonnée, mozzarella, jambon de dinde, champignons frais émincés, cœurs d''artichauts, olives noires et origan.', 5000, TRUE, 'Plat', 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80'),
+-- Le Forestier (id 16)
+(16,'Gibier du Jour',         'Composition : viande de brousse mijotée lentement dans une sauce forestière aux aromates locaux, servie avec purée d''igname blanche et légumes sautés.', 9000, TRUE, 'Plat', 'https://images.unsplash.com/photo-1432139509613-5c4255815697?w=600&q=80'),
+(16,'Champignons Sauvages',   'Composition : poêlée de champignons des bois cueillis le matin, sautés à l''ail doux, ciboule et persil frais, accompagnée de pain de manioc grillé.', 4500, TRUE, 'Entrée', 'https://images.unsplash.com/photo-1504545102780-26774c1bb073?w=600&q=80');
 
 -- Avis initiaux (statut approuvé)
 INSERT INTO avis (restaurant_id, utilisateur_id, note, commentaire, est_anonyme, nom_anonyme, statut_moderation, adresse_ip) VALUES
