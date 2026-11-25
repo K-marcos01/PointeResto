@@ -2,12 +2,13 @@ let CURRENT_RESTO = null;
 let CURRENT_RESTO_ID = null;
 let SELECTED_RATING = 5;
 let EDITING_REVIEW_ID = null;
+const FAVORITES_KEY = 'pointeresto_favorites';
 
 document.addEventListener('DOMContentLoaded', async () => {
     Auth.initClientSession();
 
     const params = new URLSearchParams(window.location.search);
-    CURRENT_RESTO_ID = parseInt(params.get('id'));
+    CURRENT_RESTO_ID = parseInt(params.get('id'), 10);
 
     if (!CURRENT_RESTO_ID) {
         document.getElementById('detail-root').innerHTML = emptyState('Restaurant introuvable.');
@@ -25,13 +26,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function emptyState(msg) {
-    return `<p style="text-align:center; padding: 3rem 1rem; color: var(--gray);">${msg}</p>`;
+    return `<p class="empty-state">${escapeHtml(msg)}</p>`;
 }
 
 function statusClass(statut) {
     if (statut === 'Ouvert') return 'status-ouvert';
     if (statut === 'Ferme bientot') return 'status-ferme-bientot';
-    return 'status-fermé';
+    return 'status-ferme status-fermé';
 }
 
 function getHeroImage(type) {
@@ -44,31 +45,47 @@ function getHeroImage(type) {
     return 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=900&q=80';
 }
 
+function getFavs() {
+    try {
+        const raw = localStorage.getItem(FAVORITES_KEY) || localStorage.getItem('pointeresto_favs') || '[]';
+        return JSON.parse(raw);
+    } catch (e) {
+        return [];
+    }
+}
+
 function render() {
     const r = CURRENT_RESTO;
-    const favs = JSON.parse(localStorage.getItem('pointeresto_favs') || '[]');
+    const favs = getFavs();
     const isFav = favs.includes(r.id_restaurant);
+
+    const nom = escapeHtml(r.nom);
+    const quartier = escapeHtml(r.nom_quartier || 'Pointe-Noire');
+    const statut = escapeHtml(r.statut_ouverture);
+    const type = escapeHtml(r.type_restaurant || '');
+    const description = escapeHtml(r.description || '');
+    const note = Number(r.note_moyenne || 0).toFixed(1);
 
     document.title = `PointeResto — ${r.nom}`;
 
     document.getElementById('detail-root').innerHTML = `
         <div class="detail-hero">
-            <img src="${getHeroImage(r.type_restaurant)}" alt="${r.nom}">
+            <img src="${getHeroImage(r.type_restaurant)}" alt="${nom}">
             <a href="Index.html" class="detail-back-btn" aria-label="Retour">←</a>
             <button class="detail-fav-btn" id="detail-fav-btn" aria-label="Favori">${isFav ? '❤️' : '🤍'}</button>
             <div class="detail-hero-text">
-                <h1 class="detail-title">${r.nom}</h1>
-                <p class="detail-subtitle">${r.nom_quartier || 'Pointe-Noire'}</p>
+                <h1 class="detail-title">${nom}</h1>
+                <p class="detail-subtitle">${quartier}</p>
             </div>
         </div>
 
         <div class="detail-status-row">
-            <span class="detail-pill ${statusClass(r.statut_ouverture)}">${r.statut_ouverture}</span>
-            <span class="detail-pill" style="background:var(--dark);">${r.type_restaurant || ''}</span>
-            <span class="detail-pill" style="background:#FFB300; color:#1A1A1A;">★ ${Number(r.note_moyenne || 0).toFixed(1)}</span>
+            <span class="detail-pill ${statusClass(r.statut_ouverture)}">${statut}</span>
+            <span class="detail-pill pill-type">${type}</span>
+            <span class="detail-pill pill-rating">★ ${note}</span>
         </div>
 
-        ${r.description ? `<p class="detail-description">${r.description}</p>` : ''}
+        ${description ? `<p class="detail-description">${description}</p>` : ''}
 
         <div class="detail-tabs">
             <button class="detail-tab active" data-tab="menus" onclick="switchTab('menus')">🍽️ Menus</button>
@@ -77,11 +94,11 @@ function render() {
         </div>
 
         <div class="detail-panel active" id="panel-menus">
-            <p style="text-align:center; color:var(--gray); padding:2rem 0;">Chargement du menu…</p>
+            <p class="empty-state">Chargement du menu…</p>
         </div>
 
         <div class="detail-panel" id="panel-avis">
-            <p style="text-align:center; color:var(--gray); padding:2rem 0;">Chargement des avis…</p>
+            <p class="empty-state">Chargement des avis…</p>
         </div>
 
         <div class="detail-panel" id="panel-orienter">
@@ -93,20 +110,24 @@ function render() {
 }
 
 function renderOrientPanel(r) {
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${r.latitude},${r.longitude}`;
-    const embedUrl = `https://maps.google.com/maps?q=${r.latitude},${r.longitude}&z=15&output=embed`;
+    const lat = encodeURIComponent(r.latitude ?? '');
+    const lng = encodeURIComponent(r.longitude ?? '');
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+    const embedUrl = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+    const adresse = escapeHtml(r.adresse);
+    const telSafe = escapeHtml(r.telephone || '');
+    const telHref = encodeURIComponent(r.telephone || '');
 
     return `
         <div class="orient-card">
-            <p class="orient-address"><strong>Adresse</strong><br>${r.adresse}</p>
+            <p class="orient-address"><strong>Adresse</strong><br>${adresse}</p>
             ${r.telephone ? `
                 <div class="orient-phone-row">
-                    📞 <a href="tel:${r.telephone}" style="color:var(--dark); text-decoration:none;">${r.telephone}</a>
+                    📞 <a href="tel:${telHref}" class="orient-phone-link">${telSafe}</a>
                 </div>
             ` : ''}
-            <iframe class="orient-map-frame" src="${embedUrl}" loading="lazy"></iframe>
-            <a href="${mapsUrl}" target="_blank" rel="noopener" class="btn-primary"
-               style="display:block; text-align:center; text-decoration:none;">
+            <iframe class="orient-map-frame" src="${embedUrl}" loading="lazy" title="Carte de localisation"></iframe>
+            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary orient-maps-btn">
                 Ouvrir dans Google Maps →
             </a>
         </div>
@@ -120,10 +141,10 @@ function switchTab(tab) {
 }
 
 function toggleFav(id) {
-    let favs = JSON.parse(localStorage.getItem('pointeresto_favs') || '[]');
+    let favs = getFavs();
     const isFav = favs.includes(id);
     favs = isFav ? favs.filter(fid => fid !== id) : [...favs, id];
-    localStorage.setItem('pointeresto_favs', JSON.stringify(favs));
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
     document.getElementById('detail-fav-btn').textContent = isFav ? '🤍' : '❤️';
     Toast.success(isFav ? 'Retiré des favoris' : 'Ajouté aux favoris');
 }
@@ -149,17 +170,25 @@ async function loadMenu() {
         });
 
         panel.innerHTML = Object.entries(categories).map(([cat, dishes]) => `
-            <h3 class="menu-category-title">${cat}</h3>
-            ${dishes.map(d => `
-                <div class="menu-dish-card">
-                    <img class="menu-dish-img" src="${d.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80'}" alt="${d.titre}">
-                    <div class="menu-dish-info">
-                        <div class="menu-dish-title">${d.titre}</div>
-                        ${d.description ? `<div class="menu-dish-desc">${d.description}</div>` : ''}
+            <h3 class="menu-category-title">${escapeHtml(cat)}</h3>
+            ${dishes.map(d => {
+                const imgUrl = d.image_url && /^https?:\/\//i.test(d.image_url)
+                    ? escapeHtml(d.image_url)
+                    : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80';
+                const titre = escapeHtml(d.titre);
+                const desc = escapeHtml(d.description || '');
+                const prix = Number(d.prix).toLocaleString('fr-FR');
+                return `
+                    <div class="menu-dish-card">
+                        <img class="menu-dish-img" src="${imgUrl}" alt="${titre}">
+                        <div class="menu-dish-info">
+                            <div class="menu-dish-title">${titre}</div>
+                            ${desc ? `<div class="menu-dish-desc">${desc}</div>` : ''}
+                        </div>
+                        <div class="menu-dish-price">${prix} FCFA</div>
                     </div>
-                    <div class="menu-dish-price">${Number(d.prix).toLocaleString('fr-FR')} FCFA</div>
-                </div>
-            `).join('')}
+                `;
+            }).join('')}
         `).join('');
     } catch (e) {
         panel.innerHTML = emptyState('Impossible de charger le menu.');
@@ -172,6 +201,7 @@ async function loadMenu() {
 async function loadReviews() {
     const panel = document.getElementById('panel-avis');
     const user = Auth.getUser();
+    const isAuthenticated = Boolean(Auth.getToken() && user && user.id_utilisateur !== 0);
 
     let reviews = [];
     try {
@@ -181,17 +211,18 @@ async function loadReviews() {
         return;
     }
 
-    const myReview = user.id_utilisateur !== 0
+    const myReview = isAuthenticated
         ? reviews.find(r => r.utilisateur_id === user.id_utilisateur)
         : null;
+
+    const myComment = myReview ? escapeHtml(myReview.commentaire || '') : '';
 
     panel.innerHTML = `
         <div class="review-add-card">
             <p class="review-add-title">${myReview ? 'Modifier votre avis' : 'Laisser un avis'}</p>
             <div class="star-picker" id="star-picker"></div>
-            <textarea id="review-comment-input" class="auth-input" rows="3"
-                      placeholder="Votre commentaire (optionnel)..."
-                      style="resize:vertical; margin-bottom:0.8rem;">${myReview ? (myReview.commentaire || '') : ''}</textarea>
+            <textarea id="review-comment-input" class="auth-input review-textarea" rows="3"
+                      placeholder="Votre commentaire (optionnel)...">${myComment}</textarea>
             <button class="btn-primary" id="btn-submit-review">${myReview ? 'Mettre à jour' : 'Publier mon avis'}</button>
         </div>
 
@@ -208,21 +239,28 @@ async function loadReviews() {
 }
 
 function renderReviewCard(r, user) {
-    const isMine = user.id_utilisateur !== 0 && r.utilisateur_id === user.id_utilisateur;
-    const authorName = r.est_anonyme ? (r.nom_anonyme || 'Visiteur Anonyme') : `${r.prenom || ''} ${r.nom || ''}`.trim();
+    const isMine = Boolean(Auth.getToken() && user && user.id_utilisateur !== 0 && r.utilisateur_id === user.id_utilisateur);
+    const rawAuthor = r.est_anonyme
+        ? (r.nom_anonyme || 'Visiteur Anonyme')
+        : `${r.prenom || ''} ${r.nom || ''}`.trim();
+    const authorName = escapeHtml(rawAuthor || 'Anonyme');
+    const comment = escapeHtml(r.commentaire || '');
+    const ownerReply = escapeHtml(r.reponse_restaurateur || '');
+    const note = Math.max(1, Math.min(5, Number(r.note) || 5));
     const date = new Date(r.date_publication).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
     return `
         <div class="review-card">
             <div class="review-card-header">
                 <div>
-                    <span class="review-author">${authorName || 'Anonyme'}</span>
+                    <span class="review-author">${authorName}</span>
                     ${isMine ? '<span class="review-own-badge">Vous</span>' : ''}
-                    <div class="review-date">${date}</div>
+                    <div class="review-date">${escapeHtml(date)}</div>
                 </div>
-                <div class="review-stars">${'★'.repeat(r.note)}${'☆'.repeat(5 - r.note)}</div>
+                <div class="review-stars">${'★'.repeat(note)}${'☆'.repeat(5 - note)}</div>
             </div>
-            ${r.commentaire ? `<p class="review-comment">${r.commentaire}</p>` : ''}
+            ${comment ? `<p class="review-comment">${comment}</p>` : ''}
+            ${ownerReply ? `<div class="review-owner-reply">✍️ Réponse de l'établissement : ${ownerReply}</div>` : ''}
         </div>
     `;
 }
@@ -235,7 +273,7 @@ function renderStarPicker() {
 
     picker.querySelectorAll('button').forEach(btn => {
         btn.addEventListener('click', () => {
-            SELECTED_RATING = parseInt(btn.dataset.star);
+            SELECTED_RATING = parseInt(btn.dataset.star, 10);
             renderStarPicker();
         });
     });
@@ -252,7 +290,6 @@ async function submitReview() {
         if (EDITING_REVIEW_ID) {
             await API.post('reviews', {
                 id_avis: EDITING_REVIEW_ID,
-                utilisateur_id: user.id_utilisateur,
                 note: SELECTED_RATING,
                 commentaire: comment
             });
@@ -260,8 +297,7 @@ async function submitReview() {
         } else {
             await API.post('reviews', {
                 restaurant_id: CURRENT_RESTO_ID,
-                utilisateur_id: user.id_utilisateur === 0 ? null : user.id_utilisateur,
-                nom_anonyme: user.id_utilisateur === 0 ? 'Visiteur Anonyme' : user.nom,
+                nom_anonyme: (!Auth.getToken() || user.id_utilisateur === 0) ? 'Visiteur Anonyme' : user.nom,
                 note: SELECTED_RATING,
                 commentaire: comment
             });

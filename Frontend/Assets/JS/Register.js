@@ -1,11 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Rediriger si déjà connecté
-    const user = localStorage.getItem('pr_user');
-    if (user) {
-        const parsed = JSON.parse(user);
-        if (parsed && parsed.id_utilisateur !== 0) {
-            window.location.href = parsed.role === 'restaurateur' ? 'Dashboard.html' : 'Index.html';
-            return;
+    const userRaw = localStorage.getItem('pr_user');
+    const token = Auth.getToken();
+    if (userRaw && token) {
+        try {
+            const parsed = JSON.parse(userRaw);
+            if (parsed && parsed.id_utilisateur !== 0) {
+                window.location.href = (parsed.role === 'restaurateur' || parsed.role === 'moderateur')
+                    ? 'Dashboard.html'
+                    : 'Index.html';
+                return;
+            }
+        } catch (e) {
+            localStorage.removeItem('pr_user');
         }
     }
 
@@ -22,7 +28,11 @@ async function handleRegister() {
     const nom      = document.getElementById('reg-nom').value.trim();
     const email    = document.getElementById('reg-email').value.trim();
     const password = document.getElementById('reg-password').value;
+    const roleEl   = document.getElementById('reg-role');
+    const role     = roleEl ? roleEl.value : 'client';
     const btn      = document.getElementById('btn-register-submit');
+
+    hideError();
 
     if (!prenom || !nom || !email || !password) {
         showError('Veuillez remplir tous les champs.');
@@ -37,14 +47,10 @@ async function handleRegister() {
     btn.textContent = 'Création…';
 
     try {
-        const res = await API.post('auth', {
-            action: 'register',
-            nom, prenom, email, password
-        });
-
-        localStorage.setItem('pr_user', JSON.stringify(res.user));
+        const res = await Auth.register(nom, prenom, email, password, role);
         Toast.success('Compte créé avec succès !');
-        setTimeout(() => { window.location.href = 'Index.html'; }, 800);
+        const target = (res.user && res.user.role === 'restaurateur') ? 'Dashboard.html' : 'Index.html';
+        setTimeout(() => { window.location.href = target; }, 800);
     } catch (e) {
         showError(e.message || 'Inscription impossible.');
         btn.disabled = false;
@@ -53,6 +59,7 @@ async function handleRegister() {
 }
 
 function goToGuest() {
+    localStorage.removeItem('pr_token');
     Auth.initClientSession();
     window.location.href = 'Index.html';
 }
@@ -61,6 +68,14 @@ function showError(msg) {
     const err = document.getElementById('reg-error');
     if (err) {
         err.textContent = msg;
-        err.style.display = 'block';
+        err.classList.add('visible');
+    }
+}
+
+function hideError() {
+    const err = document.getElementById('reg-error');
+    if (err) {
+        err.textContent = '';
+        err.classList.remove('visible');
     }
 }

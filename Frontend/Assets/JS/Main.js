@@ -1,7 +1,9 @@
 let showOnlyFavs = false;
+const FAVORITES_KEY = 'pointeresto_favorites';
 
 document.addEventListener('DOMContentLoaded', () => {
     Auth.initClientSession();
+    migrateLegacyFavorites();
     refreshFavCount();
     initFilters();
     loadRestaurants();
@@ -10,8 +12,19 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-toggle-favs').addEventListener('click', toggleFavsFilter);
 });
 
+function migrateLegacyFavorites() {
+    const legacy = localStorage.getItem('pointeresto_favs');
+    if (legacy && !localStorage.getItem(FAVORITES_KEY)) {
+        localStorage.setItem(FAVORITES_KEY, legacy);
+    }
+}
+
 function getFavs() {
-    return JSON.parse(localStorage.getItem('pointeresto_favs') || '[]');
+    try {
+        return JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+    } catch (e) {
+        return [];
+    }
 }
 
 function refreshFavCount() {
@@ -27,7 +40,7 @@ async function loadRestaurants() {
     try {
         list = await API.get('restaurants', { action: 'list', search, workspace });
     } catch (e) {
-        container.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:var(--gray); padding:2rem;">
+        container.innerHTML = `<p class="grid-empty-msg">
             Impossible de charger les restaurants. Vérifiez votre connexion.
         </p>`;
         return;
@@ -36,10 +49,17 @@ async function loadRestaurants() {
     const favs = getFavs();
     if (showOnlyFavs) {
         list = list.filter(r => favs.includes(r.id_restaurant));
+    } else {
+        // Épingler les établissements favoris en haut de la liste (TC-02)
+        list = [...list].sort((a, b) => {
+            const aFav = favs.includes(a.id_restaurant) ? 1 : 0;
+            const bFav = favs.includes(b.id_restaurant) ? 1 : 0;
+            return bFav - aFav;
+        });
     }
 
     if (!list.length) {
-        container.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:var(--gray); padding:2rem;">
+        container.innerHTML = `<p class="grid-empty-msg">
             ${showOnlyFavs ? 'Aucun favori pour le moment.' : 'Aucun restaurant trouvé.'}
         </p>`;
         return;
@@ -48,26 +68,36 @@ async function loadRestaurants() {
     const statusClass = (statut) => {
         if (statut === 'Ouvert') return 'status-ouvert';
         if (statut === 'Ferme bientot') return 'status-ferme-bientot';
-        return 'status-fermé';
+        return 'status-ferme status-fermé';
     };
 
-    container.innerHTML = list.map(r => `
-        <article class="restaurant-card" onclick="goToDetail(${r.id_restaurant})">
-            <img src="${getRestaurantImage(r.type_restaurant)}" class="card-img-top" alt="${r.nom}">
-            <span class="card-status-badge ${statusClass(r.statut_ouverture)}">${r.statut_ouverture}</span>
-            <button class="btn-fav-card" onclick="toggleFav(${r.id_restaurant}, event)">
-                ${favs.includes(r.id_restaurant) ? '❤️' : '🤍'}
-            </button>
-            <div class="card-body">
-                <h2 class="card-title">${r.nom}</h2>
-                <p class="card-address">${r.nom_quartier || 'Pointe-Noire'} — ${r.adresse}</p>
-                <div class="card-footer-meta">
-                    <span>${r.type_restaurant || ''}</span>
-                    <span class="card-rating">★ ${Number(r.note_moyenne || 0).toFixed(1)}</span>
+    container.innerHTML = list.map(r => {
+        const id = Number(r.id_restaurant);
+        const nom = escapeHtml(r.nom);
+        const quartier = escapeHtml(r.nom_quartier || 'Pointe-Noire');
+        const adresse = escapeHtml(r.adresse);
+        const type = escapeHtml(r.type_restaurant || '');
+        const statut = escapeHtml(r.statut_ouverture);
+        const note = Number(r.note_moyenne || 0).toFixed(1);
+
+        return `
+            <article class="restaurant-card" onclick="goToDetail(${id})">
+                <img src="${getRestaurantImage(r.type_restaurant)}" class="card-img-top" alt="${nom}">
+                <span class="card-status-badge ${statusClass(r.statut_ouverture)}">${statut}</span>
+                <button class="btn-fav-card" onclick="toggleFav(${id}, event)" aria-label="Favori">
+                    ${favs.includes(id) ? '❤️' : '🤍'}
+                </button>
+                <div class="card-body">
+                    <h2 class="card-title">${nom}</h2>
+                    <p class="card-address">${quartier} — ${adresse}</p>
+                    <div class="card-footer-meta">
+                        <span>${type}</span>
+                        <span class="card-rating">★ ${note}</span>
+                    </div>
                 </div>
-            </div>
-        </article>
-    `).join('');
+            </article>
+        `;
+    }).join('');
 }
 
 function getRestaurantImage(type) {
@@ -82,7 +112,7 @@ function getRestaurantImage(type) {
 }
 
 function goToDetail(id) {
-    window.location.href = `Detail.html?id=${id}`;
+    window.location.href = `Detail.html?id=${encodeURIComponent(id)}`;
 }
 
 function toggleFav(id, event) {
@@ -90,7 +120,7 @@ function toggleFav(id, event) {
     let favs = getFavs();
     const isFav = favs.includes(id);
     favs = isFav ? favs.filter(fid => fid !== id) : [...favs, id];
-    localStorage.setItem('pointeresto_favs', JSON.stringify(favs));
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
     refreshFavCount();
     Toast.success(isFav ? 'Retiré des favoris' : 'Ajouté aux favoris');
     loadRestaurants();
@@ -98,6 +128,10 @@ function toggleFav(id, event) {
 
 function toggleFavsFilter() {
     showOnlyFavs = !showOnlyFavs;
+    const btn = document.getElementById('btn-toggle-favs');
+    if (btn) {
+        btn.classList.toggle('active', showOnlyFavs);
+    }
     loadRestaurants();
 }
 

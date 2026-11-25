@@ -18,11 +18,22 @@ const Toast = {
 
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
-        toast.innerHTML = `
-            <span class="toast-icon">${icons[type] || icons.info}</span>
-            <span>${message}</span>
-            <button class="toast-close" aria-label="Fermer">×</button>
-        `;
+
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'toast-icon';
+        iconSpan.textContent = icons[type] || icons.info;
+
+        const msgSpan = document.createElement('span');
+        msgSpan.textContent = String(message ?? '');
+
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'toast-close';
+        closeBtn.setAttribute('aria-label', 'Fermer');
+        closeBtn.textContent = '×';
+
+        toast.appendChild(iconSpan);
+        toast.appendChild(msgSpan);
+        toast.appendChild(closeBtn);
 
         container.appendChild(toast);
         requestAnimationFrame(() => toast.classList.add('show'));
@@ -32,7 +43,7 @@ const Toast = {
             setTimeout(() => toast.remove(), 250);
         };
 
-        toast.querySelector('.toast-close').addEventListener('click', remove);
+        closeBtn.addEventListener('click', remove);
         if (duration > 0) setTimeout(remove, duration);
     },
 
