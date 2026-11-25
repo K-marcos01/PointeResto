@@ -8,7 +8,7 @@ on:
 
 jobs:
   quality-and-tests:
-    name: Qualité PHP, Migration PostgreSQL & Tests
+    name: Qualité PHP/HTML, Migration PostgreSQL & Tests
     runs-on: ubuntu-latest
 
     services:
@@ -21,7 +21,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U pointeresto_user -d pointeresto_test"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 5
@@ -40,17 +40,21 @@ jobs:
       - name: Récupération du code source
         uses: actions/checkout@v4
 
-      - name: Vérification sécurité (aucun fichier .env versionné)
+      - name: Vérification sécurité (aucun fichier .env suivi ni style inline HTML)
         run: |
-          if [ -f ".env" ] || [ -f "Backend/.env" ]; then
+          if [ -n "$(git ls-files .env Backend/.env)" ]; then
             echo "Erreur critique : un fichier .env est suivi par Git !"
             exit 1
           fi
+          if grep -rn 'style=' Frontend/*.html; then
+            echo "Erreur qualité : des attributs style= inline subsistent dans Frontend/*.html !"
+            exit 1
+          fi
 
-      - name: Installation de PHP 8.2 et extensions
+      - name: Installation de PHP 8.3 et extensions
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           extensions: pdo, pdo_pgsql, fileinfo, redis
           coverage: none
 
@@ -78,31 +82,39 @@ jobs:
 
       - name: Exécution des tests automatisés
         env:
+          APP_ENV: development
+          APP_SECRET: pointeresto-ci-test-secret-2026
           DATABASE_URL: postgresql://pointeresto_user:pointeresto_pass@127.0.0.1:5432/pointeresto_test
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: 6379
           REDIS_URL: redis://127.0.0.1:6379
-        run: |
-          if [ -f "Backend/tests/run_tests.php" ]; then
-            php Backend/tests/run_tests.php
-          else
-            echo "Script Backend/tests/run_tests.php non trouvé, contrôle syntaxique OK."
-          fi
+        run: php Backend/tests/run_tests.php
 
   build-docker:
-    name: Build & Validation Conteneur Docker
+    name: Build & Validation HTTP Conteneur Docker
     runs-on: ubuntu-latest
     needs: quality-and-tests
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
       - name: Récupération du code source
         uses: actions/checkout@v4
 
       - name: Construction de l'image Docker Back-End
-        run: docker build -t pointeresto-backend:${{ github.sha }} ./Backend
+        run: docker build -t pointeresto-backend:${{ github.sha }} .
 
-      - name: Test de démarrage du conteneur Apache/PHP
+      - name: Démarrage et test HTTP du conteneur PHP 8.3
         run: |
-          docker run -d --name test-api -p 8080:80 pointeresto-backend:${{ github.sha }}
-          sleep 3
-          docker ps | grep test-api
-          docker stop test-api
+          docker run -d --name test-api -p 8000:8000 pointeresto-backend:${{ github.sha }}
+          for i in $(seq 1 15); do
+            if curl -fsS "http://127.0.0.1:8000/Index.php?route=health" | grep -q '"status":"ok"'; then
+              echo "Conteneur opérationnel sur le port 8000."
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs test-api
+          exit 1
+
+      - name: Nettoyage du conteneur de test
+        if: always()
+        run: docker rm -f test-api || true
