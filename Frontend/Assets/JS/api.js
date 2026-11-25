@@ -7,7 +7,7 @@
 const IS_LOCAL = window.location.hostname === 'localhost'
               || window.location.hostname === '127.0.0.1';
 
-const DEFAULT_PROD_URL = 'https://pointeresto-production.up.railway.app';
+const DEFAULT_PROD_URL = 'https://pointerestobackend.onrender.com';
 
 const API_BASE = localStorage.getItem('pr_api_base')
     || (IS_LOCAL
