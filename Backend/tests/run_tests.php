@@ -142,9 +142,19 @@ if ($dbUrl !== '' || $pgHost !== '') {
             assertTrue(in_array($expectedCol, $columnsCheck, true), "Colonne PostgreSQL présente : {$expectedCol}");
         }
 
-        // Vérification du jeu d'essai (>= 15 établissements) et du hash bcrypt des comptes de test
+        // Vérification du jeu d'essai (>= 20 établissements et 20 médias dédiés)
         $countResto = (int)$pdo->query('SELECT COUNT(*) FROM restaurants')->fetchColumn();
-        assertTrue($countResto >= 15, "Jeu d'essai chargé ({$countResto} établissements présents)");
+        assertTrue($countResto >= 20, "Jeu d'essai chargé ({$countResto} établissements présents)");
+
+        $countMedias = (int)$pdo->query('SELECT COUNT(DISTINCT restaurant_id) FROM medias')->fetchColumn();
+        assertTrue($countMedias >= 20, "Visuels dédiés chargés ({$countMedias} restaurants illustrés)");
+
+        $restaurantModel = new Restaurant($pdo);
+        $listRestos = $restaurantModel->getAllVerified();
+        assertTrue(
+            !empty($listRestos) && !empty($listRestos[0]['photo_principale']),
+            'Modèle Restaurant : exposition de photo_principale dans getAllVerified()'
+        );
 
         $seedHash = (string)$pdo->query(
             "SELECT mot_de_passe FROM utilisateurs WHERE email = 'patrick.ngoma@gmail.com'"
@@ -167,7 +177,6 @@ if ($dbUrl !== '' || $pgHost !== '') {
         assertTrue($checkViolationCaught, 'Contrainte SQL CHECK (note 1..5) appliquée par PostgreSQL (SQLSTATE 23514)');
 
         // Vérification atomicité transactionnelle (rollBack complet en cas d'échec sur le menu)
-        $restaurantModel = new Restaurant($pdo);
         $beforeCount = (int)$pdo->query('SELECT COUNT(*) FROM restaurants')->fetchColumn();
         $rollbackTriggered = false;
         try {
@@ -180,7 +189,7 @@ if ($dbUrl !== '' || $pgHost !== '') {
                 ],
                 [
                     'titre' => 'Plat Prix Négatif Invalide',
-                    'prix'  => -100, // Viole CHECK (prix >= 0) -> doit annuler l'insertion du restaurant
+                    'prix'  => -100,
                 ]
             );
         } catch (Throwable $e) {

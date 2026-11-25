@@ -35,13 +35,16 @@ function statusClass(statut) {
     return 'status-ferme status-fermé';
 }
 
-function getHeroImage(type) {
-    const t = String(type || '').toLowerCase();
-    if (t.includes('maquis'))        return 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=900&q=80';
-    if (t.includes('fruits de mer')) return 'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=900&q=80';
-    if (t.includes('fast'))          return 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=900&q=80';
-    if (t.includes('grillade'))      return 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=900&q=80';
-    if (t.includes('boulanger'))     return 'https://images.unsplash.com/photo-1549931319-a545749fcd09?w=900&q=80';
+function resolveHeroImage(restaurant) {
+    const raw = String(restaurant.photo_principale || '').trim();
+    if (/^https?:\/\//i.test(raw)) {
+        return raw;
+    }
+    if (raw.startsWith('uploads/')) {
+        const filename = raw.replace(/^uploads\//, '');
+        const baseUploads = API_BASE.replace(/Index\.php$/i, 'Uploads.php');
+        return `${baseUploads}?file=${encodeURIComponent(filename)}`;
+    }
     return 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=900&q=80';
 }
 
@@ -62,35 +65,38 @@ function render() {
     const nom = escapeHtml(r.nom);
     const quartier = escapeHtml(r.nom_quartier || 'Pointe-Noire');
     const statut = escapeHtml(r.statut_ouverture);
-    const type = escapeHtml(r.type_restaurant || '');
+    const type = escapeHtml(r.type_restaurant || 'Restaurant');
+    const gamme = escapeHtml(r.gamme_prix || 'Classique');
     const description = escapeHtml(r.description || '');
     const note = Number(r.note_moyenne || 0).toFixed(1);
+    const heroImg = escapeHtml(resolveHeroImage(r));
 
     document.title = `PointeResto — ${r.nom}`;
 
     document.getElementById('detail-root').innerHTML = `
         <div class="detail-hero">
-            <img src="${getHeroImage(r.type_restaurant)}" alt="${nom}">
+            <img src="${heroImg}" alt="${nom}">
             <a href="Index.html" class="detail-back-btn" aria-label="Retour">←</a>
-            <button class="detail-fav-btn" id="detail-fav-btn" aria-label="Favori">${isFav ? '❤️' : '🤍'}</button>
+            <button type="button" class="detail-fav-btn" id="detail-fav-btn" aria-label="Favori">${isFav ? '❤️' : '🤍'}</button>
             <div class="detail-hero-text">
                 <h1 class="detail-title">${nom}</h1>
-                <p class="detail-subtitle">${quartier}</p>
+                <p class="detail-subtitle">📍 ${quartier} — Pointe-Noire</p>
             </div>
         </div>
 
         <div class="detail-status-row">
             <span class="detail-pill ${statusClass(r.statut_ouverture)}">${statut}</span>
             <span class="detail-pill pill-type">${type}</span>
+            <span class="detail-pill pill-price">${gamme}</span>
             <span class="detail-pill pill-rating">★ ${note}</span>
         </div>
 
         ${description ? `<p class="detail-description">${description}</p>` : ''}
 
         <div class="detail-tabs">
-            <button class="detail-tab active" data-tab="menus" onclick="switchTab('menus')">🍽️ Menus</button>
-            <button class="detail-tab" data-tab="avis" onclick="switchTab('avis')">⭐ Avis</button>
-            <button class="detail-tab" data-tab="orienter" onclick="switchTab('orienter')">📍 S'orienter</button>
+            <button type="button" class="detail-tab active" data-tab="menus" onclick="switchTab('menus')">🍽️ Menus</button>
+            <button type="button" class="detail-tab" data-tab="avis" onclick="switchTab('avis')">⭐ Avis</button>
+            <button type="button" class="detail-tab" data-tab="orienter" onclick="switchTab('orienter')">📍 S'orienter</button>
         </div>
 
         <div class="detail-panel active" id="panel-menus">
@@ -223,7 +229,7 @@ async function loadReviews() {
             <div class="star-picker" id="star-picker"></div>
             <textarea id="review-comment-input" class="auth-input review-textarea" rows="3"
                       placeholder="Votre commentaire (optionnel)...">${myComment}</textarea>
-            <button class="btn-primary" id="btn-submit-review">${myReview ? 'Mettre à jour' : 'Publier mon avis'}</button>
+            <button type="button" class="btn-primary" id="btn-submit-review">${myReview ? 'Mettre à jour' : 'Publier mon avis'}</button>
         </div>
 
         <div id="reviews-list">
