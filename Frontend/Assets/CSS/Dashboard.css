@@ -1,6 +1,5 @@
 /* ============================================================
    Dashboard.css — Espace Restaurateur PointeResto
-   Cohérent avec Theme.css (mêmes variables)
    ============================================================ */
 
 .dash-welcome {
@@ -35,7 +34,6 @@
     font-weight: 700;
 }
 
-/* Stats en haut */
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -66,7 +64,6 @@
     letter-spacing: 0.08em;
 }
 
-/* Sélecteur de restaurant */
 .restaurant-selector {
     background: var(--white);
     border-radius: var(--radius);
@@ -100,7 +97,6 @@
     border-color: var(--primary);
 }
 
-/* Onglets du dashboard */
 .dash-tabs {
     display: flex;
     gap: 0;
@@ -120,6 +116,7 @@
     cursor: pointer;
     white-space: nowrap;
     transition: var(--transition);
+    font-family: inherit;
 }
 
 .dash-tab.active {
@@ -130,7 +127,6 @@
 .dash-panel { display: none; }
 .dash-panel.active { display: block; }
 
-/* Statut */
 .status-buttons {
     display: flex;
     gap: 0.8rem;
@@ -149,6 +145,7 @@
     cursor: pointer;
     transition: var(--transition);
     color: #fff;
+    font-family: inherit;
 }
 
 .btn-status.ouvert        { background: #2e7d32; }
@@ -156,7 +153,6 @@
 .btn-status.ferme         { background: #c62828; }
 .btn-status:active        { transform: scale(0.97); }
 
-/* Section générique */
 .dash-section {
     background: var(--white);
     border-radius: var(--radius);
@@ -172,7 +168,6 @@
     color: var(--dark);
 }
 
-/* Formulaire d'ajout de plat */
 .menu-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -206,11 +201,11 @@
     font-size: 0.9rem;
     cursor: pointer;
     transition: var(--transition);
+    font-family: inherit;
 }
 
 .btn-dash-primary:hover { opacity: 0.9; }
 
-/* Liste des plats */
 .menu-item-row {
     display: flex;
     align-items: center;
@@ -244,7 +239,6 @@
 .btn-icon:hover { border-color: var(--primary); color: var(--primary); }
 .btn-icon.danger:hover { border-color: #c62828; color: #c62828; }
 
-/* Avis */
 .avis-card {
     border-bottom: 1px solid var(--border);
     padding: 1rem 0;
@@ -289,7 +283,6 @@
 }
 .avis-reponse-form textarea:focus { border-color: var(--primary); }
 
-/* Mobile */
 @media (max-width: 600px) {
     .dashboard-grid { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
     .stat-card { padding: 1rem 0.5rem; }

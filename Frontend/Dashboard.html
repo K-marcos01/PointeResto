@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PointeResto Pro — Espace Restaurateur</title>
-    <link rel="stylesheet" href="Assets/CSS/Theme.css">
-    <link rel="stylesheet" href="Assets/CSS/Header.css">
-    <link rel="stylesheet" href="Assets/CSS/Form.css">
-    <link rel="stylesheet" href="Assets/CSS/Toast.css">
-    <link rel="stylesheet" href="Assets/CSS/Dashboard.css">
+    <link rel="stylesheet" href="Assets/CSS/Theme.css?v=2">
+    <link rel="stylesheet" href="Assets/CSS/Header.css?v=2">
+    <link rel="stylesheet" href="Assets/CSS/Form.css?v=2">
+    <link rel="stylesheet" href="Assets/CSS/Toast.css?v=2">
+    <link rel="stylesheet" href="Assets/CSS/Dashboard.css?v=2">
 </head>
 <body>
     <nav class="main-navbar">
@@ -23,8 +23,6 @@
     </nav>
 
     <main class="container">
-
-        <!-- Bienvenue + stats -->
         <p id="welcome-msg" class="dash-welcome"></p>
 
         <div class="dashboard-grid" id="stats-grid">
@@ -42,7 +40,6 @@
             </div>
         </div>
 
-        <!-- Sélecteur de restaurant -->
         <div class="restaurant-selector">
             <label for="resto-select">Mon établissement :</label>
             <select id="resto-select">
@@ -50,14 +47,12 @@
             </select>
         </div>
 
-        <!-- Onglets -->
         <div class="dash-tabs">
-            <button class="dash-tab active" data-tab="statut" onclick="switchTab('statut')">📡 Statut</button>
-            <button class="dash-tab"        data-tab="menus"  onclick="switchTab('menus')">🍽️ Menus</button>
-            <button class="dash-tab"        data-tab="avis"   onclick="switchTab('avis')">💬 Avis</button>
+            <button type="button" class="dash-tab active" data-tab="statut" onclick="switchTab('statut')">📡 Statut</button>
+            <button type="button" class="dash-tab"        data-tab="menus"  onclick="switchTab('menus')">🍽️ Menus</button>
+            <button type="button" class="dash-tab"        data-tab="avis"   onclick="switchTab('avis')">💬 Avis</button>
         </div>
 
-        <!-- Onglet Statut -->
         <div class="dash-panel active" id="panel-statut">
             <div class="dash-section">
                 <p class="dash-section-title">Statut d'ouverture</p>
@@ -65,14 +60,13 @@
                     Statut actuel : <strong id="current-status">—</strong>
                 </p>
                 <div class="status-buttons">
-                    <button class="btn-status ouvert"        onclick="changeStatus('Ouvert')">✅ Ouvert</button>
-                    <button class="btn-status ferme-bientot" onclick="changeStatus('Ferme bientot')">⏳ Ferme bientôt</button>
-                    <button class="btn-status ferme"         onclick="changeStatus('Fermé')">🔴 Fermé</button>
+                    <button type="button" class="btn-status ouvert"        onclick="changeStatus('Ouvert')">✅ Ouvert</button>
+                    <button type="button" class="btn-status ferme-bientot" onclick="changeStatus('Ferme bientot')">⏳ Ferme bientôt</button>
+                    <button type="button" class="btn-status ferme"         onclick="changeStatus('Fermé')">🔴 Fermé</button>
                 </div>
             </div>
         </div>
 
-        <!-- Onglet Menus -->
         <div class="dash-panel" id="panel-menus">
             <div class="dash-section">
                 <p class="dash-section-title">Ajouter un plat</p>
@@ -80,9 +74,9 @@
                     <input type="text"   id="m-titre"       class="dash-input full-width" placeholder="Nom du plat *">
                     <input type="text"   id="m-categorie"   class="dash-input" placeholder="Catégorie (ex: Plat, Entrée)">
                     <input type="number" id="m-prix"        class="dash-input" placeholder="Prix (FCFA) *" min="0">
-                    <textarea            id="m-description" class="dash-input full-width" rows="2" placeholder="Description (optionnel)"></textarea>
+                    <textarea            id="m-description" class="dash-input full-width" rows="2" placeholder="Description / composition (optionnel)"></textarea>
                     <input type="url"    id="m-image"       class="dash-input full-width" placeholder="URL de l'image (optionnel)">
-                    <button class="btn-dash-primary full-width" id="btn-add-menu" onclick="submitMenu()">
+                    <button type="button" class="btn-dash-primary full-width" id="btn-add-menu" onclick="submitMenu()">
                         + Ajouter ce plat
                     </button>
                 </div>
@@ -93,11 +87,9 @@
             </div>
         </div>
 
-        <!-- Onglet Avis -->
         <div class="dash-panel" id="panel-avis">
             <div id="avis-list"><p class="dash-muted-msg">Chargement…</p></div>
         </div>
-
     </main>
 
     <script src="Assets/JS/api.js"></script>
