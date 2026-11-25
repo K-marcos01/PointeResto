@@ -90,7 +90,7 @@ body.auth-body {
     display: flex;
     gap: 0.6rem;
 }
-.input-row .input-field { flex: 1; min-width: 0; }
+.input-row .auth-input { flex: 1; min-width: 0; }
 
 .auth-input {
     width: 100%;
@@ -169,6 +169,10 @@ body.auth-body {
     padding: 0.5rem 0.75rem;
     background: #FFEBEE;
     border-radius: 10px;
+}
+
+.auth-error.visible {
+    display: block;
 }
 
 .auth-switch-link {

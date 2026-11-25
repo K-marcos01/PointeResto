@@ -13,8 +13,8 @@
 <body>
     <nav class="main-navbar">
         <a href="Index.html" class="logo-link">
-            <img src="Assets/Image/Logo.jpeg" alt="Logo" class="logo-icon">
-            <h1 class="logo-title">PointeResto <span style="color:var(--gray); font-size:0.7em;">Pro</span></h1>
+            <img src="Assets/Image/Logo.jpeg" alt="Logo PointeResto" class="logo-icon">
+            <h1 class="logo-title">PointeResto <span class="logo-pro-badge">Pro</span></h1>
         </a>
         <div class="nav-links">
             <button class="btn-navbar-action" id="btn-logout">Déconnexion</button>
@@ -24,7 +24,7 @@
     <main class="container">
 
         <!-- Bienvenue + stats -->
-        <p id="welcome-msg" style="margin-bottom:1.2rem; font-size:0.95rem; color:var(--gray);"></p>
+        <p id="welcome-msg" class="dash-welcome"></p>
 
         <div class="dashboard-grid" id="stats-grid">
             <div class="stat-card">
@@ -51,16 +51,16 @@
 
         <!-- Onglets -->
         <div class="dash-tabs">
-            <button class="dash-tab active" data-tab="statut"   onclick="switchTab('statut')">📡 Statut</button>
-            <button class="dash-tab"        data-tab="menus"    onclick="switchTab('menus')">🍽️ Menus</button>
-            <button class="dash-tab"        data-tab="avis"     onclick="switchTab('avis')">💬 Avis</button>
+            <button class="dash-tab active" data-tab="statut" onclick="switchTab('statut')">📡 Statut</button>
+            <button class="dash-tab"        data-tab="menus"  onclick="switchTab('menus')">🍽️ Menus</button>
+            <button class="dash-tab"        data-tab="avis"   onclick="switchTab('avis')">💬 Avis</button>
         </div>
 
         <!-- Onglet Statut -->
         <div class="dash-panel active" id="panel-statut">
             <div class="dash-section">
                 <p class="dash-section-title">Statut d'ouverture</p>
-                <p style="font-size:0.88rem; color:var(--gray); margin-bottom:0.5rem;">
+                <p class="dash-status-hint">
                     Statut actuel : <strong id="current-status">—</strong>
                 </p>
                 <div class="status-buttons">
@@ -88,13 +88,13 @@
             </div>
             <div class="dash-section">
                 <p class="dash-section-title">Carte actuelle</p>
-                <div id="menus-list"><p style="color:var(--gray); font-size:0.9rem;">Sélectionnez un restaurant.</p></div>
+                <div id="menus-list"><p class="dash-muted-msg">Sélectionnez un restaurant.</p></div>
             </div>
         </div>
 
         <!-- Onglet Avis -->
         <div class="dash-panel" id="panel-avis">
-            <div id="avis-list"><p style="color:var(--gray); font-size:0.9rem; padding:1rem 0;">Chargement…</p></div>
+            <div id="avis-list"><p class="dash-muted-msg">Chargement…</p></div>
         </div>
 
     </main>

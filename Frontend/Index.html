@@ -14,18 +14,19 @@
 <body>
     <nav class="main-navbar">
         <a href="Index.html" class="logo-link">
-            <img src="Assets/Image/Logo.jpeg" alt="Logo" class="logo-icon">
+            <img src="Assets/Image/Logo.jpeg" alt="Logo PointeResto" class="logo-icon">
             <h1 class="logo-title">PointeResto</h1>
         </a>
         <div class="nav-links">
             <button class="btn-navbar-action" id="btn-toggle-favs">Favoris (<span id="fav-count">0</span>)</button>
+            <a href="Connexion.html" class="btn-navbar-link">Connexion / Pro</a>
         </div>
     </nav>
 
     <main class="container">
         <section class="search-wrapper">
             <input type="text" id="search-input" class="input-field" placeholder="Rechercher un plat, un maquis...">
-            <select id="quartier-select" class="select-field">
+            <select id="quartier-select" class="select-field" aria-label="Filtrer par quartier">
                 <option value="">Tous les quartiers</option>
             </select>
         </section>

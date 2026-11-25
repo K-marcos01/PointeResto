@@ -17,7 +17,6 @@
     height: 180px;
     object-fit: cover;
 }
-/* Style du bouton favoris (petit cœur sur l'image) */
 .btn-fav-card {
     position: absolute;
     top: 1rem;
@@ -51,6 +50,7 @@
 }
 .status-ouvert        { background-color: #2e7d32; }
 .status-ferme-bientot { background-color: #ef6c00; }
+.status-ferme,
 .status-fermé         { background-color: #c62828; }
 
 .card-body { padding: 1.2rem; }
@@ -71,4 +71,11 @@
 .card-rating {
     color: #FFB300;
     font-weight: 600;
+}
+
+.grid-empty-msg {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--gray);
+    padding: 2rem;
 }

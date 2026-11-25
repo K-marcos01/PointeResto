@@ -35,7 +35,16 @@
     white-space: nowrap;
 }
 
+.logo-pro-badge {
+    color: var(--gray);
+    font-size: 0.7em;
+    font-weight: 700;
+}
+
 .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
     flex-shrink: 0;
 }
 
@@ -49,6 +58,29 @@
     font-size: 0.85rem;
     cursor: pointer;
     white-space: nowrap;
+    transition: var(--transition);
+}
+
+.btn-navbar-action.active {
+    background-color: var(--dark);
+}
+
+.btn-navbar-link {
+    background-color: var(--light);
+    color: var(--dark);
+    border: 1px solid var(--border);
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: var(--transition);
+}
+
+.btn-navbar-link:hover {
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
 @media (max-width: 480px) {
@@ -66,7 +98,8 @@
         font-size: 1.15rem;
     }
 
-    .btn-navbar-action {
+    .btn-navbar-action,
+    .btn-navbar-link {
         padding: 0.45rem 0.7rem;
         font-size: 0.75rem;
         border-radius: 8px;

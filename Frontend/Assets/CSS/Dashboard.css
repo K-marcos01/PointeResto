@@ -3,6 +3,38 @@
    Cohérent avec Theme.css (mêmes variables)
    ============================================================ */
 
+.dash-welcome {
+    margin-bottom: 1.2rem;
+    font-size: 0.95rem;
+    color: var(--gray);
+}
+
+.dash-status-hint {
+    font-size: 0.88rem;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+}
+
+.dash-muted-msg {
+    color: var(--gray);
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+}
+
+.dash-error-msg {
+    color: #c62828;
+    font-size: 0.9rem;
+}
+
+.dash-cat-heading {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gray);
+    margin: 1rem 0 0.5rem;
+    font-weight: 700;
+}
+
 /* Stats en haut */
 .dashboard-grid {
     display: grid;

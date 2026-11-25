@@ -32,6 +32,10 @@
                    placeholder="Votre adresse email" autocomplete="email">
             <input type="password" id="reg-password" class="auth-input"
                    placeholder="Mot de passe (6 caractères min.)" autocomplete="new-password">
+            <select id="reg-role" class="auth-input" aria-label="Type de compte">
+                <option value="client">Client — Découvrir et noter les tables</option>
+                <option value="restaurateur">Restaurateur — Gérer mon établissement</option>
+            </select>
         </div>
 
         <p id="reg-error" class="auth-error"></p>
