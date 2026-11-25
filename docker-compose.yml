@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: ${PGUSER:-pointeresto_user}
       POSTGRES_PASSWORD: ${PGPASSWORD:-pointeresto_pass}
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5433}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./database/migration.sql:/docker-entrypoint-initdb.d/01-migration.sql:ro
@@ -23,7 +23,7 @@ services:
     container_name: pointeresto_redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "${REDIS_EXTERNAL_PORT:-6379}:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
