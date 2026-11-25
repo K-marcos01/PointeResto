@@ -1,0 +1,15 @@
+[33m2631078[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m fix(frontend-css): isoler /Assets/ dans Nginx et normaliser le chargement CSS de Detail et Dashboard
+[33md456372[m feat(ui): afficher Connexion en entrée, initiales utilisateur, 20 visuels variés et modale composition plats
+[33m777cda8[m feat(routing-db): définir Connexion.html comme page d'entrée et enrichir la composition des plats
+[33m86764f7[m feat(detail): harmoniser la fiche restaurant avec le visuel dédié et mettre à jour les tests
+[33m09bd9ce[m feat(ui): refondre la page d'accueil avec bannière Pointe-Noire, filtres rapides et visuels dédiés
+[33madc3a66[m feat(media): associer 20 visuels uniques de Pointe-Noire aux restaurants et exposer photo_principale
+[33maa33e6a[m fix(auth): verrouiller l'inscription publique sur le rôle client uniquement
+[33m2d21d6b[m fix(docker): exposer PostgreSQL sur le port hôte 5433 pour éviter les conflits locaux
+[33mb09dabd[m docs: enrichir README avec l'architecture complète, les routes API et les commandes
+[33mf92e68a[m ci(github-actions): aligner le build Docker racine, PHP 8.3 et le test HTTP /health
+[33m57ad55e[m chore(docker): aligner Dockerfile, docker-compose et .env.example sur l'architecture
+[33m1644f7d[m refactor(frontend-ui): supprimer styles inline, ajouter sélecteur de rôle et nettoyer fichiers obsolètes
+[33mc53b629[m fix(frontend-js): corriger XSS, transmettre le jeton Bearer, épingler favoris et sécuriser Dashboard
+[33medac801[m test(backend): corriger le test CHECK SQL et couvrir TokenService, MediaController et transactions
+[33m4430a48[m feat(media): implémenter l'upload sécurisé avec vérification MIME 415 et diffusion protégée
