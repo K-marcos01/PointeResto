@@ -16,6 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('welcome-msg').textContent =
         `Bonjour, ${CURRENT_USER.prenom} ${CURRENT_USER.nom} 👋`;
+        const avatarEl = document.getElementById('dash-avatar-initials');
+    if (avatarEl) {
+        avatarEl.textContent = Auth.getUserInitials();
+        avatarEl.title = `${CURRENT_USER.prenom} ${CURRENT_USER.nom}`;
+    }
 
     document.getElementById('btn-logout').addEventListener('click', () => {
         Auth.logout('Connexion.html');

@@ -1,18 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const userRaw = localStorage.getItem('pr_user');
-    const token = Auth.getToken();
-    if (userRaw && token) {
-        try {
-            const parsed = JSON.parse(userRaw);
-            if (parsed && parsed.id_utilisateur !== 0) {
-                window.location.href = (parsed.role === 'restaurateur' || parsed.role === 'moderateur')
-                    ? 'Dashboard.html'
-                    : 'Index.html';
-                return;
-            }
-        } catch (e) {
-            localStorage.removeItem('pr_user');
-        }
+    if (Auth.isAuthenticated()) {
+        const parsed = Auth.getUser();
+        window.location.href = (parsed.role === 'restaurateur' || parsed.role === 'moderateur')
+            ? 'Dashboard.html'
+            : 'Index.html';
+        return;
     }
 
     document.getElementById('btn-register-submit').addEventListener('click', handleRegister);
@@ -56,8 +48,7 @@ async function handleRegister() {
 }
 
 function goToGuest() {
-    localStorage.removeItem('pr_token');
-    Auth.initClientSession();
+    Auth.startGuestExploration();
     window.location.href = 'Index.html';
 }
 

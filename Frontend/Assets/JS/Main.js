@@ -2,8 +2,36 @@ let showOnlyFavs = false;
 let activeQuickFilter = 'all';
 const FAVORITES_KEY = 'pointeresto_favorites';
 
+const DIVERSE_RESTO_GALLERY = [
+    'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=800&q=80',
+    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
+    'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&q=80',
+    'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=800&q=80',
+    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
+    'https://images.unsplash.com/photo-1535400255456-067e2bc1c0e2?w=800&q=80',
+    'https://images.unsplash.com/photo-1604908554007-31be7e0d3c0a?w=800&q=80',
+    'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=800&q=80',
+    'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80',
+    'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80',
+    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80',
+    'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=800&q=80',
+    'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=800&q=80',
+    'https://images.unsplash.com/photo-1593504049359-74330189a345?w=800&q=80',
+    'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=800&q=80',
+    'https://images.unsplash.com/photo-1432139509613-5c4255815697?w=800&q=80',
+    'https://images.unsplash.com/photo-1549931319-a545749fcd09?w=800&q=80',
+    'https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?w=800&q=80',
+    'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&q=80',
+    'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80'
+];
+
 document.addEventListener('DOMContentLoaded', () => {
-    Auth.initClientSession();
+    // La page de connexion est le point d'entrée : rediriger si ni connecté ni en exploration invité
+    if (!Auth.isAuthenticated() && !Auth.isGuestExploring()) {
+        window.location.href = 'Connexion.html';
+        return;
+    }
+
     renderNavbarAuth();
     migrateLegacyFavorites();
     refreshFavCount();
@@ -20,30 +48,28 @@ function renderNavbarAuth() {
     const slot = document.getElementById('nav-auth-slot');
     if (!slot) return;
 
-    const user = Auth.getUser();
-    const token = Auth.getToken();
+    if (Auth.isAuthenticated()) {
+        const user = Auth.getUser();
+        const initials = escapeHtml(Auth.getUserInitials());
+        const fullName = escapeHtml(`${user.prenom || ''} ${user.nom || ''}`.trim());
+        const isPro = (user.role === 'restaurateur' || user.role === 'moderateur');
 
-    if (token && user && user.id_utilisateur !== 0) {
-        if (user.role === 'restaurateur' || user.role === 'moderateur') {
-            slot.innerHTML = `
-                <span class="nav-user-pill">
-                    <a href="Dashboard.html" class="btn-navbar-link">📊 Espace Pro</a>
-                    <button type="button" class="nav-logout-btn" id="btn-nav-logout">Quitter</button>
-                </span>
-            `;
-        } else {
-            const prenom = escapeHtml(user.prenom || user.nom || 'Mon compte');
-            slot.innerHTML = `
-                <span class="nav-user-pill">
-                    <span class="btn-navbar-link">👤 ${prenom}</span>
-                    <button type="button" class="nav-logout-btn" id="btn-nav-logout">Quitter</button>
-                </span>
-            `;
-        }
+        slot.innerHTML = `
+            <span class="nav-user-pill">
+                ${isPro
+                    ? `<a href="Dashboard.html" class="nav-avatar-initials" title="${fullName} — Espace Pro">${initials}</a>`
+                    : `<span class="nav-avatar-initials" title="${fullName}">${initials}</span>`
+                }
+                <button type="button" class="nav-logout-btn" id="btn-nav-logout">Quitter</button>
+            </span>
+        `;
         const logoutBtn = document.getElementById('btn-nav-logout');
         if (logoutBtn) {
-            logoutBtn.addEventListener('click', () => Auth.logout('Index.html'));
+            logoutBtn.addEventListener('click', () => Auth.logout('Connexion.html'));
         }
+    } else {
+        // Bouton Connexion affiché uniquement en mode exploration invité
+        slot.innerHTML = `<a href="Connexion.html" class="btn-navbar-link">Connexion</a>`;
     }
 }
 
@@ -78,6 +104,11 @@ function initQuickFilterChips() {
     });
 }
 
+function getDistinctFallbackPhoto(restaurantId) {
+    const idx = Math.abs((Number(restaurantId) || 1) - 1) % DIVERSE_RESTO_GALLERY.length;
+    return DIVERSE_RESTO_GALLERY[idx];
+}
+
 function resolveRestaurantPhoto(restaurant) {
     const raw = String(restaurant.photo_principale || '').trim();
     if (/^https?:\/\//i.test(raw)) {
@@ -88,7 +119,7 @@ function resolveRestaurantPhoto(restaurant) {
         const baseUploads = API_BASE.replace(/Index\.php$/i, 'Uploads.php');
         return `${baseUploads}?file=${encodeURIComponent(filename)}`;
     }
-    return 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80';
+    return getDistinctFallbackPhoto(restaurant.id_restaurant);
 }
 
 async function loadRestaurants() {
@@ -153,11 +184,13 @@ async function loadRestaurants() {
         const statut = escapeHtml(r.statut_ouverture);
         const note = Number(r.note_moyenne || 0).toFixed(1);
         const photoUrl = escapeHtml(resolveRestaurantPhoto(r));
+        const fallbackUrl = escapeHtml(getDistinctFallbackPhoto(id + 3));
 
         return `
             <article class="restaurant-card" onclick="goToDetail(${id})">
                 <div class="card-media-wrapper">
-                    <img src="${photoUrl}" class="card-img-top" alt="${nom}" loading="lazy">
+                    <img src="${photoUrl}" class="card-img-top" alt="${nom}" loading="lazy"
+                         onerror="this.onerror=null;this.src='${fallbackUrl}';">
                     <span class="card-status-badge ${statusClass(r.statut_ouverture)}">${statut}</span>
                     <button type="button" class="btn-fav-card" onclick="toggleFav(${id}, event)" aria-label="Favori">
                         ${favs.includes(id) ? '❤️' : '🤍'}

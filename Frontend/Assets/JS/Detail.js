@@ -1,8 +1,32 @@
 let CURRENT_RESTO = null;
 let CURRENT_RESTO_ID = null;
+let CURRENT_MENU_ITEMS = [];
 let SELECTED_RATING = 5;
 let EDITING_REVIEW_ID = null;
 const FAVORITES_KEY = 'pointeresto_favorites';
+
+const DIVERSE_RESTO_GALLERY = [
+    'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=900&q=80',
+    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=900&q=80',
+    'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=900&q=80',
+    'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=900&q=80',
+    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=80',
+    'https://images.unsplash.com/photo-1535400255456-067e2bc1c0e2?w=900&q=80',
+    'https://images.unsplash.com/photo-1604908554007-31be7e0d3c0a?w=900&q=80',
+    'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=900&q=80',
+    'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=900&q=80',
+    'https://images.unsplash.com/photo-1547592180-85f173990554?w=900&q=80',
+    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=900&q=80',
+    'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=900&q=80',
+    'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=900&q=80',
+    'https://images.unsplash.com/photo-1593504049359-74330189a345?w=900&q=80',
+    'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=900&q=80',
+    'https://images.unsplash.com/photo-1432139509613-5c4255815697?w=900&q=80',
+    'https://images.unsplash.com/photo-1549931319-a545749fcd09?w=900&q=80',
+    'https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?w=900&q=80',
+    'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=900&q=80',
+    'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=900&q=80'
+];
 
 document.addEventListener('DOMContentLoaded', async () => {
     Auth.initClientSession();
@@ -14,6 +38,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('detail-root').innerHTML = emptyState('Restaurant introuvable.');
         return;
     }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDishModal();
+    });
 
     try {
         CURRENT_RESTO = await API.get('restaurants', { action: 'detail', id: CURRENT_RESTO_ID });
@@ -35,6 +63,11 @@ function statusClass(statut) {
     return 'status-ferme status-fermé';
 }
 
+function getDistinctFallbackPhoto(restaurantId) {
+    const idx = Math.abs((Number(restaurantId) || 1) - 1) % DIVERSE_RESTO_GALLERY.length;
+    return DIVERSE_RESTO_GALLERY[idx];
+}
+
 function resolveHeroImage(restaurant) {
     const raw = String(restaurant.photo_principale || '').trim();
     if (/^https?:\/\//i.test(raw)) {
@@ -45,7 +78,7 @@ function resolveHeroImage(restaurant) {
         const baseUploads = API_BASE.replace(/Index\.php$/i, 'Uploads.php');
         return `${baseUploads}?file=${encodeURIComponent(filename)}`;
     }
-    return 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=900&q=80';
+    return getDistinctFallbackPhoto(restaurant.id_restaurant);
 }
 
 function getFavs() {
@@ -70,12 +103,13 @@ function render() {
     const description = escapeHtml(r.description || '');
     const note = Number(r.note_moyenne || 0).toFixed(1);
     const heroImg = escapeHtml(resolveHeroImage(r));
+    const fallbackHero = escapeHtml(getDistinctFallbackPhoto(r.id_restaurant + 3));
 
     document.title = `PointeResto — ${r.nom}`;
 
     document.getElementById('detail-root').innerHTML = `
         <div class="detail-hero">
-            <img src="${heroImg}" alt="${nom}">
+            <img src="${heroImg}" alt="${nom}" onerror="this.onerror=null;this.src='${fallbackHero}';">
             <a href="Index.html" class="detail-back-btn" aria-label="Retour">←</a>
             <button type="button" class="detail-fav-btn" id="detail-fav-btn" aria-label="Favori">${isFav ? '❤️' : '🤍'}</button>
             <div class="detail-hero-text">
@@ -110,9 +144,30 @@ function render() {
         <div class="detail-panel" id="panel-orienter">
             ${renderOrientPanel(r)}
         </div>
+
+        <div id="dish-modal" class="dish-modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="dish-modal-title">
+            <div class="dish-modal-card">
+                <button type="button" class="dish-modal-close" id="dish-modal-close" aria-label="Fermer">×</button>
+                <img id="dish-modal-img" class="dish-modal-img" src="" alt="">
+                <div class="dish-modal-body">
+                    <div class="dish-modal-top-row">
+                        <span id="dish-modal-cat" class="dish-modal-cat"></span>
+                        <span id="dish-modal-price" class="dish-modal-price"></span>
+                    </div>
+                    <h2 id="dish-modal-title" class="dish-modal-title"></h2>
+                    <p class="dish-modal-comp-label">Composition & préparation</p>
+                    <p id="dish-modal-desc" class="dish-modal-desc"></p>
+                    <span class="dish-modal-badge-avail">✓ Disponible à la carte</span>
+                </div>
+            </div>
+        </div>
     `;
 
     document.getElementById('detail-fav-btn').addEventListener('click', () => toggleFav(r.id_restaurant));
+    document.getElementById('dish-modal-close').addEventListener('click', closeDishModal);
+    document.getElementById('dish-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'dish-modal') closeDishModal();
+    });
 }
 
 function renderOrientPanel(r) {
@@ -156,20 +211,27 @@ function toggleFav(id) {
 }
 
 // ============================================================
-//  MENUS
+//  MENUS & MODALE COMPOSITION
 // ============================================================
+function resolveDishPhoto(dish) {
+    if (dish.image_url && /^https?:\/\//i.test(dish.image_url)) {
+        return dish.image_url;
+    }
+    return getDistinctFallbackPhoto((Number(dish.id_menu) || 1) + 5);
+}
+
 async function loadMenu() {
     const panel = document.getElementById('panel-menus');
     try {
-        const items = await API.get('menus', { restaurant_id: CURRENT_RESTO_ID });
+        CURRENT_MENU_ITEMS = await API.get('menus', { restaurant_id: CURRENT_RESTO_ID });
 
-        if (!items.length) {
+        if (!CURRENT_MENU_ITEMS.length) {
             panel.innerHTML = emptyState('Aucun menu publié pour le moment.');
             return;
         }
 
         const categories = {};
-        items.forEach(item => {
+        CURRENT_MENU_ITEMS.forEach(item => {
             const cat = item.categorie || 'Plats';
             if (!categories[cat]) categories[cat] = [];
             categories[cat].push(item);
@@ -178,18 +240,20 @@ async function loadMenu() {
         panel.innerHTML = Object.entries(categories).map(([cat, dishes]) => `
             <h3 class="menu-category-title">${escapeHtml(cat)}</h3>
             ${dishes.map(d => {
-                const imgUrl = d.image_url && /^https?:\/\//i.test(d.image_url)
-                    ? escapeHtml(d.image_url)
-                    : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80';
+                const menuId = Number(d.id_menu);
+                const imgUrl = escapeHtml(resolveDishPhoto(d));
                 const titre = escapeHtml(d.titre);
-                const desc = escapeHtml(d.description || '');
+                const desc = escapeHtml(d.description || 'Préparation maison avec des produits frais sélectionnés à Pointe-Noire.');
                 const prix = Number(d.prix).toLocaleString('fr-FR');
                 return `
-                    <div class="menu-dish-card">
+                    <div class="menu-dish-card" role="button" tabindex="0"
+                         onclick="openDishModal(${menuId})"
+                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDishModal(${menuId});}">
                         <img class="menu-dish-img" src="${imgUrl}" alt="${titre}">
                         <div class="menu-dish-info">
                             <div class="menu-dish-title">${titre}</div>
-                            ${desc ? `<div class="menu-dish-desc">${desc}</div>` : ''}
+                            <div class="menu-dish-desc">${desc}</div>
+                            <span class="menu-dish-more">Voir la composition →</span>
                         </div>
                         <div class="menu-dish-price">${prix} FCFA</div>
                     </div>
@@ -201,13 +265,40 @@ async function loadMenu() {
     }
 }
 
+function openDishModal(menuId) {
+    const dish = CURRENT_MENU_ITEMS.find(m => Number(m.id_menu) === Number(menuId));
+    if (!dish) return;
+
+    const modal = document.getElementById('dish-modal');
+    if (!modal) return;
+
+    const imgEl = document.getElementById('dish-modal-img');
+    imgEl.src = resolveDishPhoto(dish);
+    imgEl.alt = dish.titre || 'Plat';
+
+    document.getElementById('dish-modal-cat').textContent = dish.categorie || 'Plat';
+    document.getElementById('dish-modal-price').textContent = `${Number(dish.prix).toLocaleString('fr-FR')} FCFA`;
+    document.getElementById('dish-modal-title').textContent = dish.titre || '';
+    document.getElementById('dish-modal-desc').textContent =
+        dish.description || 'Préparation maison élaborée à partir de produits frais locaux sélectionnés par le chef.';
+
+    modal.classList.remove('hidden');
+}
+
+function closeDishModal() {
+    const modal = document.getElementById('dish-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
 // ============================================================
 //  AVIS
 // ============================================================
 async function loadReviews() {
     const panel = document.getElementById('panel-avis');
     const user = Auth.getUser();
-    const isAuthenticated = Boolean(Auth.getToken() && user && user.id_utilisateur !== 0);
+    const isAuthenticated = Auth.isAuthenticated();
 
     let reviews = [];
     try {
@@ -245,7 +336,7 @@ async function loadReviews() {
 }
 
 function renderReviewCard(r, user) {
-    const isMine = Boolean(Auth.getToken() && user && user.id_utilisateur !== 0 && r.utilisateur_id === user.id_utilisateur);
+    const isMine = Boolean(Auth.isAuthenticated() && r.utilisateur_id === user.id_utilisateur);
     const rawAuthor = r.est_anonyme
         ? (r.nom_anonyme || 'Visiteur Anonyme')
         : `${r.prenom || ''} ${r.nom || ''}`.trim();
@@ -303,7 +394,7 @@ async function submitReview() {
         } else {
             await API.post('reviews', {
                 restaurant_id: CURRENT_RESTO_ID,
-                nom_anonyme: (!Auth.getToken() || user.id_utilisateur === 0) ? 'Visiteur Anonyme' : user.nom,
+                nom_anonyme: !Auth.isAuthenticated() ? 'Visiteur Anonyme' : user.nom,
                 note: SELECTED_RATING,
                 commentaire: comment
             });
