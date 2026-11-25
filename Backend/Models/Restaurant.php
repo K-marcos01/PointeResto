@@ -42,3 +42,81 @@ class Restaurant {
         return $stmt->fetch();
     }
 }
+
+/**
+ * Création atomique d'un établissement, de son premier plat au menu et de sa photo principale.
+ * Garantit l'intégrité multi-tables via transaction SQL (commit / rollBack) et invalide le cache Redis.
+ */
+public function createWithInitialMenuAndMedia(array $restaurantData, array $menuData, ?array $mediaData = null): int
+{
+    try {
+        $this->pdo->beginTransaction();
+
+        $stmtResto = $this->pdo->prepare(
+            'INSERT INTO restaurants (
+                workspace_id, proprietaire_id, nom, adresse, telephone, email,
+                description, latitude, longitude, statut_ouverture, type_restaurant, gamme_prix, est_valide
+             ) VALUES (
+                :workspace_id, :proprietaire_id, :nom, :adresse, :telephone, :email,
+                :description, :latitude, :longitude, :statut_ouverture, :type_restaurant, :gamme_prix, FALSE
+             ) RETURNING id_restaurant'
+        );
+
+        $stmtResto->execute([
+            ':workspace_id'     => $restaurantData['workspace_id'],
+            ':proprietaire_id'  => $restaurantData['proprietaire_id'],
+            ':nom'              => $restaurantData['nom'],
+            ':adresse'          => $restaurantData['adresse'],
+            ':telephone'        => $restaurantData['telephone'] ?? null,
+            ':email'            => $restaurantData['email'] ?? null,
+            ':description'      => $restaurantData['description'] ?? null,
+            ':latitude'         => $restaurantData['latitude'] ?? null,
+            ':longitude'        => $restaurantData['longitude'] ?? null,
+            ':statut_ouverture' => $restaurantData['statut_ouverture'] ?? 'Fermé',
+            ':type_restaurant'  => $restaurantData['type_restaurant'] ?? null,
+            ':gamme_prix'       => $restaurantData['gamme_prix'] ?? 'Classique',
+        ]);
+
+        $restaurantId = (int)$stmtResto->fetchColumn();
+
+        $stmtMenu = $this->pdo->prepare(
+            'INSERT INTO menus (restaurant_id, titre, description, prix, disponible, categorie)
+             VALUES (:restaurant_id, :titre, :description, :prix, TRUE, :categorie)'
+        );
+        $stmtMenu->execute([
+            ':restaurant_id' => $restaurantId,
+            ':titre'         => $menuData['titre'],
+            ':description'   => $menuData['description'] ?? null,
+            ':prix'          => (int)$menuData['prix'],
+            ':categorie'     => $menuData['categorie'] ?? 'Plat',
+        ]);
+
+        if ($mediaData !== null) {
+            $stmtMedia = $this->pdo->prepare(
+                'INSERT INTO medias (restaurant_id, nom_fichier, type_mime, taille, chemin_fichier)
+                 VALUES (:restaurant_id, :nom_fichier, :type_mime, :taille, :chemin_fichier)'
+            );
+            $stmtMedia->execute([
+                ':restaurant_id'  => $restaurantId,
+                ':nom_fichier'    => $mediaData['nom_fichier'],
+                ':type_mime'      => $mediaData['type_mime'],
+                ':taille'         => $mediaData['taille'],
+                ':chemin_fichier' => $mediaData['chemin_fichier'],
+            ]);
+        }
+
+        $this->pdo->commit();
+
+        // Invalidation de la clé de cache Redis associée au quartier
+        $cache = new \App\Services\CacheService();
+        $cache->delete('restaurants:workspace:' . (int)$restaurantData['workspace_id']);
+        $cache->delete('restaurants:all');
+
+        return $restaurantId;
+    } catch (\Throwable $e) {
+        if ($this->pdo->inTransaction()) {
+            $this->pdo->rollBack();
+        }
+        throw $e;
+    }
+}
