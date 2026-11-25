@@ -68,7 +68,6 @@ class AuthController {
         $prenom   = trim((string)($data['prenom'] ?? ''));
         $email    = strtolower(trim((string)($data['email'] ?? '')));
         $password = (string)($data['password'] ?? '');
-        $rawRole  = strtolower(trim((string)($data['role'] ?? 'client')));
 
         if ($nom === '' || $prenom === '' || $email === '' || $password === '') {
             http_response_code(400);
@@ -88,9 +87,6 @@ class AuthController {
             return;
         }
 
-        // Seuls les rôles client et restaurateur sont autorisés à l'inscription publique
-        $role = in_array($rawRole, ['client', 'restaurateur'], true) ? $rawRole : 'client';
-
         $check = $this->db->prepare('SELECT id_utilisateur FROM utilisateurs WHERE email = :email');
         $check->execute([':email' => $email]);
         if ($check->fetch()) {
@@ -101,9 +97,10 @@ class AuthController {
 
         $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
 
+        // Toute inscription publique crée exclusivement un compte client
         $insert = $this->db->prepare(
             "INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role, statut_compte)
-             VALUES (:nom, :prenom, :email, :mot_de_passe, :role, 'actif')
+             VALUES (:nom, :prenom, :email, :mot_de_passe, 'client', 'actif')
              RETURNING id_utilisateur, nom, prenom, email, role"
         );
         $insert->execute([
@@ -111,7 +108,6 @@ class AuthController {
             ':prenom'       => $prenom,
             ':email'        => $email,
             ':mot_de_passe' => $hash,
-            ':role'         => $role,
         ]);
         $user = $insert->fetch();
 

@@ -28,8 +28,6 @@ async function handleRegister() {
     const nom      = document.getElementById('reg-nom').value.trim();
     const email    = document.getElementById('reg-email').value.trim();
     const password = document.getElementById('reg-password').value;
-    const roleEl   = document.getElementById('reg-role');
-    const role     = roleEl ? roleEl.value : 'client';
     const btn      = document.getElementById('btn-register-submit');
 
     hideError();
@@ -47,10 +45,9 @@ async function handleRegister() {
     btn.textContent = 'Création…';
 
     try {
-        const res = await Auth.register(nom, prenom, email, password, role);
+        await Auth.register(nom, prenom, email, password);
         Toast.success('Compte créé avec succès !');
-        const target = (res.user && res.user.role === 'restaurateur') ? 'Dashboard.html' : 'Index.html';
-        setTimeout(() => { window.location.href = target; }, 800);
+        setTimeout(() => { window.location.href = 'Index.html'; }, 800);
     } catch (e) {
         showError(e.message || 'Inscription impossible.');
         btn.disabled = false;
