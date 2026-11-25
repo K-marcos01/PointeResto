@@ -1,0 +1,90 @@
+name: CI/CD — PointeResto
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality-and-tests:
+    name: Qualité PHP, Migration PostgreSQL & Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: pointeresto_test
+          POSTGRES_USER: pointeresto_user
+          POSTGRES_PASSWORD: pointeresto_pass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+
+    steps:
+      - name: Récupération du code source
+        uses: actions/checkout@v4
+
+      - name: Vérification sécurité (aucun fichier .env versionné)
+        run: |
+          if [ -f ".env" ] || [ -f "Backend/.env" ]; then
+            echo "Erreur critique : un fichier .env est suivi par Git !"
+            exit 1
+          fi
+
+      - name: Installation de PHP 8.2 et extensions (pdo_pgsql, redis)
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo, pdo_pgsql, fileinfo, redis
+          coverage: none
+
+      - name: Contrôle syntaxique (Linting) sur l'ensemble du Back-End
+        run: find Backend -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Chargement du schéma et du jeu d'essai PostgreSQL
+        env:
+          PGPASSWORD: pointeresto_pass
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          psql -h 127.0.0.1 -U pointeresto_user -d pointeresto_test -v ON_ERROR_STOP=1 -f database/migration.sql
+
+      - name: Exécution des tests automatisés (Sécurité, Cache & BDD)
+        env:
+          DATABASE_URL: postgresql://pointeresto_user:pointeresto_pass@127.0.0.1:5432/pointeresto_test
+          REDIS_URL: redis://127.0.0.1:6379
+        run: php Backend/tests/run_tests.php
+
+  build-and-deploy:
+    name: Build Docker & Déploiement Continu
+    runs-on: ubuntu-latest
+    needs: quality-and-tests
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Récupération du code source
+        uses: actions/checkout@v4
+
+      - name: Validation du build de l'image Docker Back-End
+        run: docker build -t pointeresto-backend:${{ github.sha }} ./Backend
+
+     - name: Déclenchement du déploiement Railway (si secret configuré)
+        env:
+          RAILWAY_DEPLOY_HOOK: ${{ secrets.RAILWAY_DEPLOY_HOOK }}
+        if: env.RAILWAY_DEPLOY_HOOK != ''
+        run: curl -fsSL -X POST "$RAILWAY_DEPLOY_HOOK"
