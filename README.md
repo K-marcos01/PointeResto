@@ -1,42 +1,34 @@
-I. PointeResto - Plateforme Gastronomique de Pointe-Noire
+# PointeResto — Guide Gastronomique & Espace Restaurateur (Pointe-Noire)
 
-PointeResto est une application web full-stack Mobile-First dédiée au 
-référencement, à la recherche et à l'évaluation des restaurants, maquis 
-et fast-foods de la ville de Pointe-Noire.
+**PointeResto** est une application web full-stack mobile-first permettant aux habitants et visiteurs de Pointe-Noire (République du Congo) de découvrir les établissements culinaires par quartier, consulter les cartes et tarifs en FCFA, publier des avis et s'orienter, tout en offrant aux restaurateurs un espace professionnel sécurisé pour piloter leur établissement en temps réel.
 
-II. Architecture Source du Projet
+---
 
-L'application respecte une séparation stricte des langages et une 
-modularité totale :
+## 1. Architecture & Fonctionnement Global
 
-PointeResto/
-            Config/             # Connexion BDD Pure (PHP)
-            Backend/            # API REST (Architecture MVC en PHP Pur)
-            Models/             # Modèles d'accès aux tables PostgreSQL
-            Controllers/        # Contrôleurs logiques (Avis, Établissements, Médias)
-            Public/Index.php    # Routeur et point d'entrée unique de l'API
-            Frontend/           # Interface Client Mobile-First (HTML Pur)
-            Assets/
-            CSS/        # Feuilles de styles CSS Pur 
-            JS/         # Scripts logiques Vanilla JS
-            Index.html      # Portail de recherche citoyen
-            Dashboard.html  # Espace de gestion restaurateur
+L'application repose sur une architecture découplée en **quatre couches** conteneurisées :
 
-Mesures de Sécurité Implémentées
-
-1. Isolation Étanche des Langages : Aucune balise <style>, aucun attribut
-inline style="" et aucune injection de propriétés CSS via JavaScript pour
-garantir l'intégrité du code.
-
-2. Vérification Strict des Médias (MediaController) : Blocage de l'upload
-de faux menus (scripts malveillants masqués). Utilisation de la fonction
-native mime_content_type() côté serveur pour analyser le fichier binaire
-réel (seuls application/pdf, image/png et image/jpeg sont acceptés).
-
-3. Lutte contre le Spam d'Avis : Collecte automatique de l'adresse IP de
-l'appareil émetteur ($_SERVER['REMOTE_ADDR']) enregistrée de manière
-immuable dans la table avis pour permettre le bannissement ou le
-bridage des requêtes (Rate Limiting).
-
-4. Requêtes Préparées PDO : Protection totale contre les injections SQL sur
-l'ensemble des modules backend.
+```text
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        FRONT-END (Nginx :8080)                          │
+│  HTML5 / CSS3 modulaire / JavaScript ES6+ (api.js, Auth.js, Main.js...) │
+│  • Stockage local : jeton JWT (pr_token) + favoris (pointeresto_favorites)│
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │ HTTP / JSON + Authorization: Bearer
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     API REST BACK-END (PHP 8.3 :8000)                   │
+│  Point d'entrée unique : Backend/Public/Index.php?route=<module>        │
+│  • TokenService : vérification cryptographique HMAC-SHA256              │
+│  • Contrôleurs : Auth, Restaurant, Menu, Review, Media, Dashboard       │
+│  • Diffusion médias : Backend/Public/Uploads.php?file=<hash>.jpg|png    │
+└───────────────────┬─────────────────────────────────┬───────────────────┘
+                    │                                 │
+                    ▼                                 ▼
+┌───────────────────────────────────┐ ┌───────────────────────────────────┐
+│        CACHE CLÉ-VALEUR           │ │      BASE DE DONNÉES              │
+│         Redis 7 (:6379)           │ │      PostgreSQL 16 (:5432)        │
+│  • Mise en cache des listes       │ │  • 6 tables normalisées (MPD)     │
+│  • Invalidation auto sur écriture │ │  • Requêtes préparées PDO         │
+│  • Repli fichier si Redis absent  │ │  • Transactions SQL atomiques     │
+└───────────────────────────────────┘ └───────────────────────────────────┘
