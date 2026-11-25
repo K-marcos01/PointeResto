@@ -1,36 +1,53 @@
 <?php
+
 require_once __DIR__ . '/../Models/DashboardData.php';
+require_once __DIR__ . '/../Services/TokenService.php';
+require_once __DIR__ . '/../Services/CacheService.php';
+
+use App\Services\CacheService;
 
 class DashboardController {
-    private $model;
+    private DashboardData $model;
 
     public function __construct($db) {
         $this->model = new DashboardData($db);
     }
 
-    public function handleRequest() {
+    public function handleRequest(): void {
+        $authUser = TokenService::getAuthenticatedUser();
+        if ($authUser === null) {
+            http_response_code(401);
+            echo json_encode(['message' => 'Non authentifié ou jeton expiré.']);
+            return;
+        }
+
+        if (!in_array($authUser['role'], ['restaurateur', 'moderateur'], true)) {
+            http_response_code(403);
+            echo json_encode(['message' => 'Accès réservé aux restaurateurs et modérateurs.']);
+            return;
+        }
+
+        $userId = (int)$authUser['id_utilisateur'];
         $method = $_SERVER['REQUEST_METHOD'];
         $action = $_GET['action'] ?? 'stats';
 
         if ($method === 'GET') {
-            $userId = intval($_GET['user_id'] ?? 0);
             $this->handleGet($action, $userId);
             return;
         }
 
         if ($method === 'POST') {
-            $input  = json_get_input();
-            $userId = intval($input['user_id'] ?? 0);
-            $this->handlePost($action, $userId, $input);
+            $input = json_get_input();
+            $postAction = (string)($input['action'] ?? $action);
+            $this->handlePost($postAction, $userId, $input);
             return;
         }
 
         http_response_code(405);
+        echo json_encode(['message' => 'Méthode HTTP non autorisée.']);
     }
 
-    private function handleGet($action, $userId) {
-        if (!$userId) { http_response_code(401); echo json_encode(['message' => 'Non authentifié']); return; }
-
+    private function handleGet(string $action, int $userId): void {
         if ($action === 'stats') {
             echo json_encode($this->model->getStats($userId));
             return;
@@ -40,7 +57,7 @@ class DashboardController {
             return;
         }
         if ($action === 'menus' && isset($_GET['restaurant_id'])) {
-            echo json_encode($this->model->getMenus(intval($_GET['restaurant_id']), $userId));
+            echo json_encode($this->model->getMenus((int)$_GET['restaurant_id'], $userId));
             return;
         }
         if ($action === 'avis') {
@@ -52,31 +69,67 @@ class DashboardController {
         echo json_encode(['message' => 'Action introuvable']);
     }
 
-    private function handlePost($action, $userId, $input) {
-        if (!$userId) { http_response_code(401); echo json_encode(['message' => 'Non authentifié']); return; }
-
+    private function handlePost(string $action, int $userId, array $input): void {
         if ($action === 'status') {
-            $ok = $this->model->updateStatus(intval($input['restaurant_id']), $userId, $input['statut']);
+            $restaurantId = (int)($input['restaurant_id'] ?? 0);
+            $statut = (string)($input['statut'] ?? '');
+            $ok = $this->model->updateStatus($restaurantId, $userId, $statut);
+            if ($ok) {
+                (new CacheService())->delete('restaurants:all');
+            }
             echo json_encode(['success' => $ok]);
             return;
         }
+
         if ($action === 'menu-add') {
-            $ok = $this->model->addMenu(intval($input['restaurant_id']), $userId, $input);
+            $restaurantId = (int)($input['restaurant_id'] ?? 0);
+            $titre = trim((string)($input['titre'] ?? ''));
+            $prix = isset($input['prix']) ? (int)$input['prix'] : -1;
+            if ($restaurantId <= 0 || $titre === '' || $prix < 0) {
+                http_response_code(400);
+                echo json_encode(['message' => 'Titre et prix valide requis.']);
+                return;
+            }
+            $ok = $this->model->addMenu($restaurantId, $userId, $input);
             echo json_encode(['success' => $ok]);
             return;
         }
+
         if ($action === 'menu-update') {
-            $ok = $this->model->updateMenu(intval($input['id_menu']), $userId, $input);
+            $menuId = (int)($input['id_menu'] ?? 0);
+            $titre = trim((string)($input['titre'] ?? ''));
+            $prix = isset($input['prix']) ? (int)$input['prix'] : -1;
+            if ($menuId <= 0 || $titre === '' || $prix < 0) {
+                http_response_code(400);
+                echo json_encode(['message' => 'Données du plat invalides.']);
+                return;
+            }
+            $ok = $this->model->updateMenu($menuId, $userId, $input);
             echo json_encode(['success' => $ok]);
             return;
         }
+
         if ($action === 'menu-delete') {
-            $ok = $this->model->deleteMenu(intval($input['id_menu']), $userId);
+            $menuId = (int)($input['id_menu'] ?? 0);
+            if ($menuId <= 0) {
+                http_response_code(400);
+                echo json_encode(['message' => 'Identifiant du plat manquant.']);
+                return;
+            }
+            $ok = $this->model->deleteMenu($menuId, $userId);
             echo json_encode(['success' => $ok]);
             return;
         }
+
         if ($action === 'repondre-avis') {
-            $ok = $this->model->repondreAvis(intval($input['id_avis']), $userId, $input['reponse']);
+            $avisId = (int)($input['id_avis'] ?? 0);
+            $reponse = trim((string)($input['reponse'] ?? ''));
+            if ($avisId <= 0 || $reponse === '') {
+                http_response_code(400);
+                echo json_encode(['message' => 'Réponse invalide.']);
+                return;
+            }
+            $ok = $this->model->repondreAvis($avisId, $userId, $reponse);
             echo json_encode(['success' => $ok]);
             return;
         }
