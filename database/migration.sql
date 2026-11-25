@@ -85,7 +85,7 @@ CREATE TABLE avis (
     nom_anonyme          VARCHAR(100),
     reponse_restaurateur TEXT,
     statut_moderation    VARCHAR(20) DEFAULT 'en_attente' CHECK (statut_moderation IN ('en_attente','approuve','rejete')),
-    adresse_ip           VARCHAR(45)    -- Stockée pour la lutte anti-spam par IP
+    adresse_ip           VARCHAR(45)
 );
 
 -- TABLE : medias
@@ -107,6 +107,7 @@ CREATE INDEX idx_menus_restaurant ON menus(restaurant_id);
 CREATE INDEX idx_avis_restaurant ON avis(restaurant_id);
 CREATE INDEX idx_avis_statut ON avis(statut_moderation);
 CREATE INDEX idx_avis_ip_date ON avis(adresse_ip, date_publication);
+CREATE INDEX idx_medias_restaurant ON medias(restaurant_id);
 
 -- DONNÉES DE TEST (SEED) - 20 établissements réalistes à Pointe-Noire
 
@@ -151,27 +152,50 @@ INSERT INTO restaurants (workspace_id, proprietaire_id, nom, adresse, telephone,
 (2, 3, 'Bar-Plage Atlantique',  'Plage de la Côte Sauvage, face à l''hôtel', '+242066200400', 'barplage@gmail.com',       'Cocktails tropicaux, tapas et en-cas, ambiance musicale le soir.',                                -4.7940, 11.8555, 'Ferme bientot', 'Bar-Restaurant',   'Classique',     4.0, TRUE),
 (3, 1, 'Chez Fifi Grillades',   'Marché de Tié-Tié, Entrée Nord',            '+242066300500', 'chezfifi@gmail.com',       'Grillades de porc, bœuf et mouton à la braise. Renommée pour ses sauces pimentées.',               -4.7810, 11.8715, 'Ouvert',        'Grillade',         'Économique',    4.7, TRUE);
 
+-- Médias dédiés (1 visuel distinct par établissement de Pointe-Noire)
+INSERT INTO medias (restaurant_id, nom_fichier, type_mime, taille, chemin_fichier) VALUES
+(1,  'la-paillote-poulet-braise.jpg',      'image/jpeg', 312.40, 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=800&q=80'),
+(2,  'le-comptoir-centre-ville.jpg',       'image/jpeg', 284.10, 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80'),
+(3,  'caicos-jardin-atlantic.jpg',         'image/jpeg', 295.00, 'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&q=80'),
+(4,  'le-derrick-fruits-de-mer.jpg',       'image/jpeg', 340.80, 'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=800&q=80'),
+(5,  'maman-josephine-cote-sauvage.jpg',   'image/jpeg', 368.20, 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80'),
+(6,  'le-pescadou-capitaine-grille.jpg',   'image/jpeg', 301.50, 'https://images.unsplash.com/photo-1535400255456-067e2bc1c0e2?w=800&q=80'),
+(7,  'maquis-chez-tantie-saka-saka.jpg',   'image/jpeg', 278.90, 'https://images.unsplash.com/photo-1604908554007-31be7e0d3c0a?w=800&q=80'),
+(8,  'braiserie-du-peuple-tie-tie.jpg',    'image/jpeg', 319.00, 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=800&q=80'),
+(9,  'fast-food-rond-point-lumumba.jpg',   'image/jpeg', 265.40, 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80'),
+(10, 'la-marmite-africaine-tie-tie.jpg',   'image/jpeg', 290.15, 'https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80'),
+(11, 'villa-savane-jardin-mpaka.jpg',      'image/jpeg', 310.75, 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80'),
+(12, 'le-calme-bleu-mpaka.jpg',            'image/jpeg', 274.30, 'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=800&q=80'),
+(13, 'snack-etudiants-universite.jpg',     'image/jpeg', 248.60, 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=800&q=80'),
+(14, 'pizza-kongossa-pointe-noire.jpg',    'image/jpeg', 305.90, 'https://images.unsplash.com/photo-1593504049359-74330189a345?w=800&q=80'),
+(15, 'chawarma-king-fond-tie-tie.jpg',     'image/jpeg', 262.10, 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=800&q=80'),
+(16, 'le-forestier-grand-bois.jpg',        'image/jpeg', 332.45, 'https://images.unsplash.com/photo-1432139509613-5c4255815697?w=800&q=80'),
+(17, 'boulangerie-mimosa-grand-bois.jpg',  'image/jpeg', 259.80, 'https://images.unsplash.com/photo-1549931319-a545749fcd09?w=800&q=80'),
+(18, 'le-senegalais-thieboudienne.jpg',    'image/jpeg', 298.40, 'https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?w=800&q=80'),
+(19, 'bar-plage-atlantique-soiree.jpg',    'image/jpeg', 351.20, 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&q=80'),
+(20, 'chez-fifi-grillades-brochettes.jpg', 'image/jpeg', 326.70, 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80');
+
 -- Menus représentatifs avec visuels
 INSERT INTO menus (restaurant_id, titre, description, prix, disponible, categorie, image_url) VALUES
 -- La Paillote
-(1, 'Poulet Braisé Royal',    'Poulet entier braisé aux épices locales, servi avec alloco et salade',        6500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=300&q=80'),
-(1, 'Capitaine Grillé',       'Filet de capitaine grillé sur charbon, riz blanc et légumes de saison',       8000,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1535400255456-067e2bc1c0e2?w=300&q=80'),
-(1, 'Saka-Saka Traditionnel', 'Feuilles de manioc pilées au poisson salé, banane plantain et piment',        3500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1604908554007-31be7e0d3c0a?w=300&q=80'),
+(1, 'Poulet Braisé Royal',    'Poulet entier braisé aux épices locales, servi avec alloco et salade',        6500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&q=80'),
+(1, 'Capitaine Grillé',       'Filet de capitaine grillé sur charbon, riz blanc et légumes de saison',       8000,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1535400255456-067e2bc1c0e2?w=400&q=80'),
+(1, 'Saka-Saka Traditionnel', 'Feuilles de manioc pilées au poisson salé, banane plantain et piment',        3500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1604908554007-31be7e0d3c0a?w=400&q=80'),
 -- Le Derrick
-(4, 'Plateau Fruits de Mer',  'Crevettes géantes, calamars et palourdes au beurre citronné, frites maison', 12000, TRUE, 'Plat',    'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=300&q=80'),
-(4, 'Bar Rayé Sauce Mafé',    'Bar rayé entier en sauce mafé à l''arachide, riz parfumé',                    9500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?w=300&q=80'),
+(4, 'Plateau Fruits de Mer',  'Crevettes géantes, calamars et palourdes au beurre citronné, frites maison', 12000, TRUE, 'Plat',    'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?w=400&q=80'),
+(4, 'Bar Rayé Sauce Mafé',    'Bar rayé entier en sauce mafé à l''arachide, riz parfumé',                    9500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?w=400&q=80'),
 -- Maquis Chez Tantie
-(7, 'Plat du Jour',           'Plat unique quotidien selon arrivage : pondu, mosaka ou ntaba',                2000,  TRUE, 'Formule', 'https://images.unsplash.com/photo-1547592180-85f173990554?w=300&q=80'),
-(7, 'Saka-Saka Maison',       'Feuilles de manioc pilées maison, poisson fumé, huile de palme rouge',        1500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=300&q=80'),
+(7, 'Plat du Jour',           'Plat unique quotidien selon arrivage : pondu, mosaka ou ntaba',                2000,  TRUE, 'Formule', 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80'),
+(7, 'Saka-Saka Maison',       'Feuilles de manioc pilées maison, poisson fumé, huile de palme rouge',        1500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=400&q=80'),
 -- Fast Food Rond-Point
-(9, 'Menu Burger Classique',  'Double burger steak + fromage, frites maison, boisson fraîche',               3000,  TRUE, 'Formule', 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&q=80'),
-(9, 'Chawarma Poulet',        'Chawarma poulet mariné, salade, sauce blanche, pain pita chaud',              2500,  TRUE, 'Snack',   'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=300&q=80'),
+(9, 'Menu Burger Classique',  'Double burger steak + fromage, frites maison, boisson fraîche',               3000,  TRUE, 'Formule', 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80'),
+(9, 'Chawarma Poulet',        'Chawarma poulet mariné, salade, sauce blanche, pain pita chaud',              2500,  TRUE, 'Snack',   'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&q=80'),
 -- Pizza Kongossa
-(14,'Pizza Congolaise',       'Tomates, fromage, crevettes locales, piment doux et coriandre fraîche',       5500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1593504049359-74330189a345?w=300&q=80'),
-(14,'Pizza 4 Saisons',        'Jambon, champignons, artichauts, olives, sauce tomate maison',                5000,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&q=80'),
+(14,'Pizza Congolaise',       'Tomates, fromage, crevettes locales, piment doux et coriandre fraîche',       5500,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1593504049359-74330189a345?w=400&q=80'),
+(14,'Pizza 4 Saisons',        'Jambon, champignons, artichauts, olives, sauce tomate maison',                5000,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80'),
 -- Le Forestier
-(16,'Gibier du Jour',         'Viande de brousse en sauce, igname pilée et légumes forestiers',               9000,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1432139509613-5c4255815697?w=300&q=80'),
-(16,'Champignons Sauvages',   'Poêlée de champignons forestiers à l''ail et au persil, pain de manioc',       4500,  TRUE, 'Entrée',  'https://images.unsplash.com/photo-1504545102780-26774c1bb073?w=300&q=80');
+(16,'Gibier du Jour',         'Viande de brousse en sauce, igname pilée et légumes forestiers',               9000,  TRUE, 'Plat',    'https://images.unsplash.com/photo-1432139509613-5c4255815697?w=400&q=80'),
+(16,'Champignons Sauvages',   'Poêlée de champignons forestiers à l''ail et au persil, pain de manioc',       4500,  TRUE, 'Entrée',  'https://images.unsplash.com/photo-1504545102780-26774c1bb073?w=400&q=80');
 
 -- Avis initiaux (statut approuvé)
 INSERT INTO avis (restaurant_id, utilisateur_id, note, commentaire, est_anonyme, nom_anonyme, statut_moderation, adresse_ip) VALUES

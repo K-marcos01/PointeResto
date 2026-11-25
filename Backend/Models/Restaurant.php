@@ -24,7 +24,16 @@ class Restaurant {
             }
         }
 
-        $sql = "SELECT r.*, w.nom_quartier FROM restaurants r 
+        $sql = "SELECT r.*, w.nom_quartier,
+                       COALESCE(
+                           (SELECT m.chemin_fichier
+                            FROM medias m
+                            WHERE m.restaurant_id = r.id_restaurant
+                            ORDER BY m.date_upload DESC, m.id_media DESC
+                            LIMIT 1),
+                           ''
+                       ) AS photo_principale
+                FROM restaurants r 
                 LEFT JOIN workspaces w ON r.workspace_id = w.id_workspace 
                 WHERE r.est_valide = TRUE";
         $params = [];
@@ -57,7 +66,16 @@ class Restaurant {
     }
 
     public function getById($id) {
-        $sql = "SELECT r.*, w.nom_quartier FROM restaurants r 
+        $sql = "SELECT r.*, w.nom_quartier,
+                       COALESCE(
+                           (SELECT m.chemin_fichier
+                            FROM medias m
+                            WHERE m.restaurant_id = r.id_restaurant
+                            ORDER BY m.date_upload DESC, m.id_media DESC
+                            LIMIT 1),
+                           ''
+                       ) AS photo_principale
+                FROM restaurants r 
                 LEFT JOIN workspaces w ON r.workspace_id = w.id_workspace 
                 WHERE r.id_restaurant = :id AND r.est_valide = TRUE";
         $stmt = $this->db->prepare($sql);
