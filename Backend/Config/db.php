@@ -1,28 +1,42 @@
 <?php
+
 class Database {
-    private $conn = null;
+    private ?PDO $conn = null;
 
-    public function connect() {
-        if ($this->conn !== null) return $this->conn;
+    public function connect(): PDO {
+        if ($this->conn !== null) {
+            return $this->conn;
+        }
 
-        // Railway injecte DATABASE_URL automatiquement
-        $databaseUrl = getenv('DATABASE_URL');
+        $appEnv      = getenv('APP_ENV') ?: 'development';
+        $databaseUrl = getenv('DATABASE_URL') ?: '';
 
-        if ($databaseUrl) {
+        if ($databaseUrl !== '') {
             $params = parse_url($databaseUrl);
+            $queryParams = [];
+            if (!empty($params['query'])) {
+                parse_str($params['query'], $queryParams);
+            }
+
+            $defaultSslMode = ($appEnv === 'production') ? 'require' : 'prefer';
+            $sslMode = $queryParams['sslmode'] ?? $defaultSslMode;
+
             $dsn = sprintf(
-                "pgsql:host=%s;port=%s;dbname=%s;sslmode=require",
-                $params['host'],
-                $params['port'] ?? 5432,
-                ltrim($params['path'], '/')
+                'pgsql:host=%s;port=%d;dbname=%s;sslmode=%s',
+                $params['host'] ?? 'localhost',
+                (int)($params['port'] ?? 5432),
+                ltrim($params['path'] ?? '/pointeresto', '/'),
+                $sslMode
             );
-            $user     = $params['user'];
-            $password = $params['pass'];
+            $user     = isset($params['user']) ? urldecode($params['user']) : 'postgres';
+            $password = isset($params['pass']) ? urldecode($params['pass']) : '';
         } else {
-            // Fallback local
-            $dsn      = "pgsql:host=localhost;dbname=pointeresto";
-            $user     = getenv('DB_USER')     ?: 'kpano';
-            $password = getenv('DB_PASSWORD') ?: '';
+            $host     = getenv('PGHOST') ?: 'localhost';
+            $port     = getenv('PGPORT') ?: '5432';
+            $dbname   = getenv('PGDATABASE') ?: 'pointeresto';
+            $dsn      = sprintf('pgsql:host=%s;port=%s;dbname=%s', $host, $port, $dbname);
+            $user     = getenv('PGUSER') ?: (getenv('DB_USER') ?: 'pointeresto_user');
+            $password = getenv('PGPASSWORD') ?: (getenv('DB_PASSWORD') ?: 'pointeresto_pass');
         }
 
         try {
@@ -34,7 +48,10 @@ class Database {
             return $this->conn;
         } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["error" => "Database failure: " . $e->getMessage()]);
+            $message = ($appEnv === 'production')
+                ? 'Erreur de connexion à la base de données.'
+                : 'Database failure: ' . $e->getMessage();
+            echo json_encode(['error' => $message]);
             exit;
         }
     }
